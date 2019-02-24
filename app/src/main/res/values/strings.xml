@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ToGet</string>
+    <string name="title_activity_full_info">FullInfoActivity</string>
+</resources>
