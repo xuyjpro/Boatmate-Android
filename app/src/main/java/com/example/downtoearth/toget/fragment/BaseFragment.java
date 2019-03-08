@@ -13,9 +13,12 @@ import android.widget.Toast;
 
 public abstract class BaseFragment extends Fragment {
 
+    public String TAG;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        TAG=getClass().getSimpleName();
 
         View view=initView();
         initData();
@@ -27,5 +30,7 @@ public abstract class BaseFragment extends Fragment {
     public void showToast(String msg){
         Toast.makeText(getContext(),msg,Toast.LENGTH_SHORT).show();
     }
-
+    public void log(String msg){
+        Log.e(TAG,msg);
+    }
 }

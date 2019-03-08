@@ -1,24 +1,24 @@
 package com.example.downtoearth.toget.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.JsonReader;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.downtoearth.toget.MainActivity;
 import com.example.downtoearth.toget.R;
 import com.example.downtoearth.toget.adapter.CommentAdapter;
 import com.example.downtoearth.toget.bean.Comment;
 import com.example.downtoearth.toget.bean.DynamicListBean;
+import com.example.downtoearth.toget.impl.onDialogItemClickListener;
 import com.example.downtoearth.toget.utils.HttpUtils;
 import com.example.downtoearth.toget.utils.ToolUtils;
 import com.example.downtoearth.toget.view.CustomDialog;
@@ -36,7 +36,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.leefeng.promptlibrary.PromptDialog;
 import okhttp3.Call;
 import okhttp3.Response;
 
@@ -49,9 +48,9 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
     private TextView tv_content;
     private TextView tv_time;
     private TextView tv_comment;
-    private TextView tv_like1;
+    private TextView tv_like;
     private TextView tv_comment1;
-
+    private CheckBox cb_like;
     private ViewGroup layout_comment;
 
     private CommentAdapter mAdapter;
@@ -78,14 +77,20 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
         tv_comment=findViewById(R.id.tv_comment);
         tv_comment1=findViewById(R.id.tv_commment1);
 
-        tv_like1=findViewById(R.id.tv_like1);
+        tv_like=findViewById(R.id.tv_like);
+        cb_like=findViewById(R.id.cb_like);
         layout_comment=findViewById(R.id.layout_comment);
+
+        Drawable[] drawables=cb_like.getCompoundDrawables();
+        drawables[0].setBounds(0,0,60,60);
+        cb_like.setCompoundDrawables(drawables[0],null,null,null);
 
     }
     public void initData(){
         rv_comment.setLayoutManager(new LinearLayoutManager(this));
         mDataList=new ArrayList();
         rv_comment.setAdapter(mAdapter=new CommentAdapter(mDataList));
+
         refreshLayout.setOnRefreshLoadmoreListener(new OnRefreshLoadmoreListener() {
             @Override
             public void onLoadmore(RefreshLayout refreshlayout) {
@@ -106,12 +111,34 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
         mAdapter.setOnItemClikcListener(new CommentAdapter.OnItemClickListener() {
             @Override
             public void onLikeClick(int position) {
-
+                postLike(position);
             }
 
             @Override
-            public void onItemClick(int position) {
+            public void onItemClick(final int position) {
                 CustomDialog customDialog=new CustomDialog(DynamicDetailActivity.this);
+                customDialog.setOnItemClick(new onDialogItemClickListener() {
+                    @Override
+                    public void onDelete() {
+                        postDelete(position);
+                    }
+
+                    @Override
+                    public void onDetail() {
+                        Comment.DataBean dataBean= (Comment.DataBean) mDataList.get(position);
+
+                        Intent intent= new Intent(DynamicDetailActivity.this,CommentDetailActivity.class);
+                        intent.putExtra("id",dataBean.getId());
+                        intent.putExtra("position",position);
+                        startActivityForResult(intent,1002);
+
+                    }
+
+                    @Override
+                    public void onCopy() {
+
+                    }
+                });
                 customDialog.show();
             }
 
@@ -126,7 +153,9 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
 
                 Intent intent= new Intent(DynamicDetailActivity.this,CommentDetailActivity.class);
                 intent.putExtra("id",dataBean.getId());
-                startActivity(intent);
+                intent.putExtra("position",position);
+
+                startActivityForResult(intent,1002);
             }
         });
         getDetail();
@@ -137,6 +166,8 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
         layout_comment.setOnClickListener(this);
         ViewGroup layout_delete=findViewById(R.id.layout_delete);
         layout_delete.setOnClickListener(this);
+        findViewById(R.id.layout_back).setOnClickListener(this);
+        cb_like.setOnClickListener(this);
     }
     public void getDetail(){
         OkGo.post(HttpUtils.DYNAMIC_DETAIL)
@@ -166,7 +197,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
                 .tag(this)
                 .isMultipart(true)
                 .params("token",ToolUtils.getString("token"))
-                .params("curentPage",mNextPage)
+                .params("currentPage",mNextPage)
                 .params("parent_id",getIntent().getIntExtra("id",0))
                 .execute(new StringCallback() {
                     @Override
@@ -182,8 +213,6 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
-
                     }
                 });
 
@@ -201,7 +230,39 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
                             JSONObject jsonObject=new JSONObject(s);
                             if(jsonObject.getInt("code")==200){
                                 showToast("删除成功");
+                                Intent intent=new Intent();
+                                intent.putExtra("position",getIntent().getIntExtra("position",0));
+                                setResult(2001,intent);
                                 finish();
+                            }else{
+                                showToast(jsonObject.getString("message"));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+    public void postDelete(final int position){
+        Comment.DataBean dataBean= (Comment.DataBean) mDataList.get(position);
+        OkGo.post(HttpUtils.DELETE_COMMENT)
+                .tag(this)
+                .isMultipart(true)
+                .params("token",ToolUtils.getString("token"))
+                .params("id",dataBean.getId())
+                .execute(new StringCallback() {
+                    @Override
+                    public void onSuccess(String s, Call call, Response response) {
+                        try {
+                            JSONObject jsonObject=new JSONObject(s);
+                            if(jsonObject.getInt("code")==200){
+                                showToast("删除成功");
+                                mDataList.remove(position);
+                                mAdapter.notifyItemRemoved(position);
+                                int comment=Integer.parseInt(tv_comment.getText().toString());
+                                tv_comment.setText(comment-1);
+                                tv_comment1.setText(comment-1);
+
                             }else{
                                 showToast(jsonObject.getString("message"));
                             }
@@ -222,11 +283,14 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
         tv_comment.setText(dataBean.getComment()+"");
         tv_comment1.setText(dataBean.getComment()+"");
 
-        tv_like1.setText(dataBean.getAwesome()+"");
+        tv_like.setText(dataBean.getAwesome()+"");
+        cb_like.setText(dataBean.getAwesome()+"");
+        cb_like.setChecked(dataBean.isLike());
+
     }
     public void parseData(String s,boolean isRefresh){
         Comment comment=new Gson().fromJson(s,Comment.class);
-        if(comment.getData()!=null){
+        if(comment.getData()!=null&&comment.getData().size()!=0){
             if(isRefresh){
                 mDataList.clear();
             }
@@ -246,6 +310,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
             case R.id.layout_comment:
 
                 PublishCommentActivity.startActivityForComment(this,getIntent().getIntExtra("id",0),tv_name.getText().toString(),1000);
+
                 break;
             case R.id.layout_delete:
 
@@ -266,6 +331,146 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
                         )
                         .show(getSupportFragmentManager());
                 break;
+            case R.id.layout_back:
+                Intent intent=new Intent();
+                intent.putExtra("position",getIntent().getIntExtra("position",0));
+                intent.putExtra("awesome",Integer.parseInt(tv_like.getText().toString()));
+                intent.putExtra("comment",Integer.parseInt(tv_comment1.getText().toString()));
+                intent.putExtra("isLike",cb_like.isChecked());
+                setResult(2000,intent);
+                finish();
+                break;
+
+            case R.id.cb_like:
+                postLike();
+                break;
+        }
+    }
+
+    public void postLike() {
+        OkGo.post(HttpUtils.LIKE_CLICK)
+                .tag(this)
+                .isMultipart(true)
+                .params("token", ToolUtils.getString("token"))
+                .params("id", getIntent().getIntExtra("id",0))
+                .params("isLike", cb_like.isChecked()? 0 : 1)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onSuccess(String s, Call call, Response response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(s);
+                            if (jsonObject.getInt("code") == 200) {
+                                showToast(cb_like.isChecked()?"点赞成功":"取消点赞成功");
+
+                                int awesome=Integer.parseInt(tv_like.getText().toString());
+                                if(cb_like.isChecked()){//点赞
+                                   cb_like.setText(awesome+1+"");
+                                    tv_like.setText(awesome+1+"");
+
+                                }else{
+                                    cb_like.setText(awesome-1+"");
+                                    tv_like.setText(awesome-1+"");
+
+
+                                }
+                            } else {
+                                showToast(jsonObject.getString("message"));
+                                cb_like.setChecked(!cb_like.isChecked());
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+    }
+
+    public void postLike(final int position) {
+        final Comment.DataBean dataBean = (Comment.DataBean) mDataList.get(position);
+        OkGo.post(HttpUtils.AWESOME_COMMENT)
+                .tag(this)
+                .isMultipart(true)
+                .params("token", ToolUtils.getString("token"))
+                .params("id", dataBean.getId())
+                .params("isLike", dataBean.isLike() ? 1 : 0)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Response response, Exception e) {
+                        super.onError(call, response, e);
+                        log("Error");
+                    }
+
+                    @Override
+                    public void onSuccess(String s, Call call, Response response) {
+                        log(s);
+                        try {
+                            JSONObject jsonObject = new JSONObject(s);
+                            if (jsonObject.getInt("code") == 200) {
+                                showToast(dataBean.isLike()?"取消点赞成功":"点赞成功");
+
+                                dataBean.setLike(!dataBean.isLike());
+                                if(dataBean.isLike()){
+                                    dataBean.setAwesome(dataBean.getAwesome()+1);
+                                }else{
+                                    dataBean.setAwesome(dataBean.getAwesome()-1);
+
+                                }
+                            } else {
+                                showToast(jsonObject.getString("message"));
+                            }
+                            mDataList.set(position,dataBean);
+                            mAdapter.notifyItemChanged(position);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+    }
+    @Override
+    public void onBackPressed() {
+
+        Intent intent=new Intent();
+        intent.putExtra("position",getIntent().getIntExtra("position",0));
+        intent.putExtra("awesome",Integer.parseInt(tv_like.getText().toString()));
+        intent.putExtra("comment",Integer.parseInt(tv_comment1.getText().toString()));
+        intent.putExtra("isLike",cb_like.isChecked());
+        setResult(2000,intent);
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==1000){
+            if(resultCode==RESULT_OK){  //评论成功
+                int comment=Integer.parseInt(tv_comment.getText().toString());
+                comment++;
+                tv_comment.setText(comment+"");
+                tv_comment1.setText(comment+"");
+                refreshLayout.autoRefresh();
+            }
+        }else if(requestCode==1001){//添加子评论
+
+        }else if(requestCode==1002){//评论详情
+            if(data!=null){
+                int position=data.getIntExtra("postion",0);
+                if (resultCode == 2000) {   //修改
+                    Comment.DataBean dataBean= (Comment.DataBean) mDataList.get(position);
+                    dataBean.setAwesome(data.getIntExtra("awesome",0));
+                    dataBean.setComment(data.getIntExtra("comment",0));
+                    dataBean.setLike(data.getBooleanExtra("isLike",true));
+                    mAdapter.notifyItemChanged(position);
+                } else if (resultCode == 2001) { //删除
+                    mDataList.remove(position);
+                    int comment=Integer.parseInt(tv_comment.getText().toString());
+                    tv_comment1.setText(comment-1+"");
+                    tv_comment.setText(comment-1+"");
+                    mAdapter.notifyItemRemoved(position);
+                }
+            }
         }
     }
 }

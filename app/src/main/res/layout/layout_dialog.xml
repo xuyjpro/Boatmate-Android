@@ -14,10 +14,11 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/tv_comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:text="回复评论"
+            android:text="评论详情"
             android:padding="20dp"
 
             android:background="@drawable/rv_focus_seletor"
@@ -25,11 +26,12 @@
             android:textSize="14sp" />
 
         <TextView
+            android:id="@+id/tv_delete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:background="@color/white"
             android:padding="20dp"
+            android:background="@drawable/rv_focus_seletor"
 
             android:text="删除评论"
             android:textColor="@color/textBlack"

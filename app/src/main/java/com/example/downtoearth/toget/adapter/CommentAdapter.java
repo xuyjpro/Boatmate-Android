@@ -88,6 +88,15 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         View view = LayoutInflater.from(mContext).inflate(R.layout.subdynamic_item, parent, false);
         final ViewHolder holder = new ViewHolder(view);
 
+        holder.cb_like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int position=holder.getAdapterPosition();
+                if(mListener!=null){
+                    mListener.onLikeClick(position);
+                }
+            }
+        });
         holder.tv_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,6 +124,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         Glide.with(mContext).load(HttpUtils.DOWNLOAD_URL+dataBean.getHeadPic()).into(holder.iv_head);
         holder.tv_name.setText(dataBean.getNickname());
         holder.cb_like.setText(dataBean.getAwesome()+"");
+        holder.cb_like.setChecked(dataBean.isLike());
         holder.tv_time.setText(getTime(dataBean.getTime()));
         holder.tv_content.setText(dataBean.getContent());
         if(dataBean.getComment()>0){

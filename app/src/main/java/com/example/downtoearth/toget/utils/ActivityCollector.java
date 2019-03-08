@@ -23,6 +23,7 @@ public class ActivityCollector {
             }
         }
     }
+
     public static void finishOther(Activity a){
         for (Activity activity:activities){
             if(!activity.isFinishing()){

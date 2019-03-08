@@ -7,7 +7,7 @@ package com.example.downtoearth.toget.utils;
 public class HttpUtils {
 
  //   public static final String IP="23.95.216.81";
-    public static final String IP = "192.168.1.5:8080";
+    public static final String IP = "47.111.163.217:8080";
     public static final String REGISTER = "http://" + IP + "/boamate/" + "register";
     public static final String LOGIN = "http://" + IP + "/boamate/" + "login";
     public static final String EDIT_INFO = "http://" + IP + "/boamate/" + "editUserInfo";
@@ -20,9 +20,10 @@ public class HttpUtils {
 
     public static final String GET_COMMENTS="http://"+IP+"/boamate/"+"getComments";
     public static final String LIKE_CLICK="http://"+IP+"/boamate/"+"awesomeDynamic";
+    public static final String AWESOME_COMMENT="http://"+IP+"/boamate/"+"awesomeComment";
     public static final String DYNAMIC_DETAIL="http://"+IP+"/boamate/"+"dynamicDetail";
     public static final String COMMENT_DETAIL="http://"+IP+"/boamate/"+"commentDetail";
     public static final String GET_SUB_COMMENTS="http://"+IP+"/boamate/"+"getSubComments";
     public static final String DYNAMIC_DELETE="http://"+IP+"/boamate/"+"deleteDynamic";
-
+    public static final String DELETE_COMMENT="http://"+IP+"/boamate/"+"deleteComment";
 }

@@ -74,7 +74,8 @@ public class DynamicFragment extends BaseFragment {
             public void onItemClick(int position) {
                 Intent intent = new Intent(getContext(), DynamicDetailActivity.class);
                 intent.putExtra("id", ((DynamicListBean.DataBean) mDynamicList.get(position)).getId());
-                startActivity(intent);
+                intent.putExtra("position",position);
+                startActivityForResult(intent,1000);
             }
 
             @Override
@@ -114,7 +115,6 @@ public class DynamicFragment extends BaseFragment {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
 
                     }
                 });
@@ -159,7 +159,7 @@ public class DynamicFragment extends BaseFragment {
 
     public void parseData(String s, boolean isRefresh) {
         DynamicListBean dlb = new Gson().fromJson(s, DynamicListBean.class);
-        if (dlb.getData() != null) {
+        if (dlb.getData() != null&&dlb.getData().size()!=0) {
             if (isRefresh) {
                 mDynamicList.clear();
             }
@@ -175,7 +175,20 @@ public class DynamicFragment extends BaseFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
+        if(requestCode==1000) {  //动态详情
+            if(data!=null){
+                int position=data.getIntExtra("postion",0);
+                if (resultCode == 2000) {   //修改
+                    DynamicListBean.DataBean dataBean= (DynamicListBean.DataBean) mDynamicList.get(position);
+                    dataBean.setAwesome(data.getIntExtra("awesome",0));
+                    dataBean.setComment(data.getIntExtra("comment",0));
+                    dataBean.setLike(data.getBooleanExtra("isLike",true));
+                    mAdapter.notifyItemChanged(position);
+                } else if (resultCode == 2001) { //删除
+                    mDynamicList.remove(position);
+                    mAdapter.notifyItemRemoved(position);
+                }
+            }
 
         }
     }

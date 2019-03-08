@@ -178,7 +178,19 @@
                                 android:textColor="@color/textGray"
                                 android:textSize="13sp" />
                         </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/layout_delete"
+                            android:orientation="horizontal"
+                            android:layout_width="0dp"
+                            android:gravity="center"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@mipmap/delete"/>
 
+                        </LinearLayout>
                 </LinearLayout>
 
                 <View

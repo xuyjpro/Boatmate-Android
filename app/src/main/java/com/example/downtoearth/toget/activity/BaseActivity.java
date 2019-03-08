@@ -31,4 +31,7 @@ public class BaseActivity extends AppCompatActivity {
         super.onDestroy();
         ActivityCollector.removeActivity(this);
     }
+    public void log(String msg){
+        Log.e(TAG,msg);
+    }
 }

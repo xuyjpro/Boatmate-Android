@@ -107,7 +107,7 @@ public class PublishCommentActivity extends BaseActivity {
                                 promptDialog.showSuccess("发布成功");
                                 Intent data = new Intent();
                                 data.putExtra("position", getIntent().getIntExtra("position", 0));
-                                setResult(ADD_SUCCESS, data);
+                                setResult(RESULT_OK, data);
                                 finish();
                             } else {
                                 promptDialog.showSuccess("发布失败");
