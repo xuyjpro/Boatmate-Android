@@ -23,6 +23,7 @@ import com.example.downtoearth.toget.activity.EditInfoActivity;
 import com.example.downtoearth.toget.activity.LoginActivity;
 import com.example.downtoearth.toget.adapter.ViewPagerAdapter;
 import com.example.downtoearth.toget.bean.UserInfo;
+import com.example.downtoearth.toget.fragment.BaseFragment;
 import com.example.downtoearth.toget.fragment.HomeFragment;
 import com.example.downtoearth.toget.fragment.NewsFrament;
 import com.example.downtoearth.toget.utils.ActivityCollector;
@@ -46,7 +47,7 @@ public class MainActivity extends BaseActivity {
 
     private DrawerLayout mDrawerLayout;
 
-    private List<Fragment> mFragmentList;
+    private List<BaseFragment> mFragmentList;
     private CircleImageView mHeadPic;
     private TextView mUserName;
     private TextView tvHeartWord;

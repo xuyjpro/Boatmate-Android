@@ -3,13 +3,16 @@ package com.example.downtoearth.toget.fragment;
 import android.content.Intent;
 
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.JsonReader;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.downtoearth.toget.R;
 import com.example.downtoearth.toget.activity.DynamicDetailActivity;
 import com.example.downtoearth.toget.activity.PublishCommentActivity;
 import com.example.downtoearth.toget.adapter.DynamicAdapter;
@@ -19,6 +22,8 @@ import com.example.downtoearth.toget.utils.ToolUtils;
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshLoadmoreListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,6 +39,7 @@ public class DynamicFragment extends BaseFragment {
 
     private DynamicAdapter mAdapter;
     private List mDynamicList;
+    private RefreshLayout smartRefreshLayout;
 
     private int mNextPage = 1;
 
@@ -48,10 +54,11 @@ public class DynamicFragment extends BaseFragment {
     @Override
     public View initView() {
 
-        recyclerView = new RecyclerView(getContext());
+        View view=LayoutInflater.from(getContext()).inflate(R.layout.fragment_dynamic,null);
+        recyclerView = view.findViewById(R.id.recycler_view);
+        smartRefreshLayout=view.findViewById(R.id.smart_refresh);
 
-
-        return recyclerView;
+        return view;
     }
 
     @Override
@@ -61,7 +68,19 @@ public class DynamicFragment extends BaseFragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(mAdapter = new DynamicAdapter(mDynamicList));
+        smartRefreshLayout.setOnRefreshLoadmoreListener(new OnRefreshLoadmoreListener() {
+            @Override
+            public void onLoadmore(RefreshLayout refreshlayout) {
+                getNewData(false);
+                refreshlayout.finishLoadmore(1000);
+            }
 
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                getNewData(true);
+                refreshlayout.finishRefresh(1000);
+            }
+        });
         mAdapter.setOnItemClikcListener(new DynamicAdapter.OnItemClickListener() {
             @Override
             public void onLikeClick(int position) {
@@ -87,9 +106,14 @@ public class DynamicFragment extends BaseFragment {
             }
         });
 
+        smartRefreshLayout.autoRefresh();
     }
 
 
+    public void autoRefresh(){
+        smartRefreshLayout.autoRefresh();
+
+    }
     public void getNewData(final boolean isRefresh) {
         if (isRefresh) {
             mNextPage = 1;

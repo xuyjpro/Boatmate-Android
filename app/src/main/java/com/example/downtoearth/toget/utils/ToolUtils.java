@@ -2,6 +2,12 @@ package com.example.downtoearth.toget.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
+import com.example.downtoearth.toget.R;
 
 import java.text.SimpleDateFormat;
 
@@ -73,5 +79,9 @@ public class ToolUtils {
     public static int dip2px( float dipValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dipValue * scale + 0.5f);
+    }
+    public static void loadImage(ImageView imageView,String url){
+
+        //Glide.with(context).load(HttpUtils.DOWNLOAD_URL+url).error(R.mipmap.person).into(imageView);
     }
 }

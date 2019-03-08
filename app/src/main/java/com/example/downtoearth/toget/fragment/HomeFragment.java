@@ -1,16 +1,21 @@
 package com.example.downtoearth.toget.fragment;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.example.downtoearth.toget.MainActivity;
 import com.example.downtoearth.toget.R;
 import com.example.downtoearth.toget.activity.PublishDynamicActivity;
 import com.example.downtoearth.toget.adapter.ViewPagerAdapter;
+import com.example.downtoearth.toget.utils.ToolUtils;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadmoreListener;
 
@@ -24,15 +29,14 @@ import java.util.List;
 public class HomeFragment extends BaseFragment {
     private ViewPager viewPager;
     private FloatingActionButton mFloatBtn;
-    private  List<Fragment> fragments;
-    private RefreshLayout smartRefreshLayout;
+    private RadioGroup radioGroup;
+    private  List<BaseFragment> fragments;
 
     private static final int PUBLISH_DYNAMIC=999;
     @Override
     public View initView() {
         View view=LayoutInflater.from(getContext()).inflate(R.layout.fragment_home,null);
 
-        smartRefreshLayout = view.findViewById(R.id.smart_refresh);
 
         viewPager=view.findViewById(R.id.view_pager);
         mFloatBtn=view.findViewById(R.id.btn_floating);
@@ -45,6 +49,17 @@ public class HomeFragment extends BaseFragment {
                 startActivityForResult(intent,PUBLISH_DYNAMIC);
             }
         });
+        radioGroup=view.findViewById(R.id.radio_group);
+
+        for(int i=0;i<radioGroup.getChildCount();i++){
+            RadioButton rb= (RadioButton) radioGroup.getChildAt(i);
+            Drawable drawable = getResources().getDrawable(
+                    R.drawable.home_top_rb);
+            // / 这一步必须要做,否则不会显示.
+            drawable.setBounds(0, 0, ToolUtils.dip2px(16),
+                    ToolUtils.dip2px(4));
+            rb.setCompoundDrawables(null, null, null, drawable);
+        }
         initData();
         return view;
     }
@@ -56,25 +71,30 @@ public class HomeFragment extends BaseFragment {
 
         fragments=new ArrayList<>();
 
+
+
         fragments.add(DynamicFragment.newInstance(0));
         fragments.add(DynamicFragment.newInstance(1));
 
+
         viewPager.setAdapter(new ViewPagerAdapter(getChildFragmentManager(),fragments));
+        viewPager.setCurrentItem(0);
 
-        smartRefreshLayout.setOnRefreshLoadmoreListener(new OnRefreshLoadmoreListener() {
-            @Override
-            public void onLoadmore(RefreshLayout refreshlayout) {
-                ((DynamicFragment)fragments.get(0)).getNewData(false);
-                refreshlayout.finishLoadmore(1000);
-            }
 
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onRefresh(RefreshLayout refreshlayout) {
-                ((DynamicFragment)fragments.get(0)).getNewData(true);
-                refreshlayout.finishRefresh(1000);
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                switch (radioGroup.getCheckedRadioButtonId()){
+                    case R.id.rb1:
+
+                        viewPager.setCurrentItem(0);
+                        break;
+                    case R.id.rb2:
+                        viewPager.setCurrentItem(1);
+                        break;
+                }
             }
         });
-        smartRefreshLayout.autoRefresh();
     }
 
     @Override
@@ -83,7 +103,11 @@ public class HomeFragment extends BaseFragment {
         switch (requestCode){
             case PUBLISH_DYNAMIC:
                 if(resultCode==PublishDynamicActivity.ADD_SUCCESS){
-                    smartRefreshLayout.autoRefresh();
+
+                    ((DynamicFragment)fragments.get(0)).autoRefresh();
+                    ((DynamicFragment)fragments.get(1)).autoRefresh();
+
+
                 }
         }
     }

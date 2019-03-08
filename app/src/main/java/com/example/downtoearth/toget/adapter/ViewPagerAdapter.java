@@ -4,6 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.example.downtoearth.toget.fragment.BaseFragment;
+
 import java.util.List;
 
 /**
@@ -11,9 +13,9 @@ import java.util.List;
  */
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
-    private List<Fragment> mFragmentList;
+    private List<BaseFragment> mFragmentList;
 
-    public ViewPagerAdapter(FragmentManager fm,List<Fragment> list) {
+    public ViewPagerAdapter(FragmentManager fm,List<BaseFragment> list) {
         super(fm);
         this.mFragmentList=list;
     }
