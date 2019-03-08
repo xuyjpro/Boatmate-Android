@@ -177,7 +177,7 @@ public class DynamicFragment extends BaseFragment {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==1000) {  //动态详情
             if(data!=null){
-                int position=data.getIntExtra("postion",0);
+                int position=data.getIntExtra("position",0);
                 if (resultCode == 2000) {   //修改
                     DynamicListBean.DataBean dataBean= (DynamicListBean.DataBean) mDynamicList.get(position);
                     dataBean.setAwesome(data.getIntExtra("awesome",0));

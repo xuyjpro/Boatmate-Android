@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.downtoearth.toget.R;
 import com.example.downtoearth.toget.bean.DynamicListBean;
+import com.example.downtoearth.toget.utils.DisplayUtils;
 import com.example.downtoearth.toget.utils.HttpUtils;
 import com.example.downtoearth.toget.utils.ToolUtils;
 
@@ -74,7 +75,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<DynamicAdapter.ViewHold
             tv_share = itemView.findViewById(R.id.tv_share);
 
             Drawable[] drawables=cb_like.getCompoundDrawables();
-            drawables[0].setBounds(0,0,60,60);
+            drawables[0].setBounds(0,0,ToolUtils.dip2px(24),ToolUtils.dip2px(24));
             cb_like.setCompoundDrawables(drawables[0],null,null,null);
         }
     }

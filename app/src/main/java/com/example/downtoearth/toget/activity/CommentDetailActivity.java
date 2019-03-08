@@ -17,8 +17,10 @@ import com.example.downtoearth.toget.R;
 import com.example.downtoearth.toget.adapter.CommentAdapter;
 import com.example.downtoearth.toget.bean.Comment;
 import com.example.downtoearth.toget.bean.DynamicListBean;
+import com.example.downtoearth.toget.impl.onDialogItemClickListener;
 import com.example.downtoearth.toget.utils.HttpUtils;
 import com.example.downtoearth.toget.utils.ToolUtils;
+import com.example.downtoearth.toget.view.CustomDialog;
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
@@ -75,14 +77,53 @@ public class CommentDetailActivity extends BaseActivity implements View.OnClickL
         cb_like = findViewById(R.id.cb_like);
 
         Drawable[] drawables = cb_like.getCompoundDrawables();
-        drawables[0].setBounds(0, 0, 60, 60);
+        drawables[0].setBounds(0,0,ToolUtils.dip2px(24),ToolUtils.dip2px(24));
         cb_like.setCompoundDrawables(drawables[0], null, null, null);
     }
 
     public void initData() {
         rv_comment.setLayoutManager(new LinearLayoutManager(this));
         mDataList = new ArrayList();
-        rv_comment.setAdapter(mAdapter = new CommentAdapter(mDataList));
+        rv_comment.setAdapter(mAdapter = new CommentAdapter(mDataList,true));
+        mAdapter.setOnItemClikcListener(new CommentAdapter.OnItemClickListener() {
+            @Override
+            public void onLikeClick(int position) {
+
+            }
+
+            @Override
+            public void onItemClick(final int position) {
+                CustomDialog customDialog=new CustomDialog(CommentDetailActivity.this,true);
+                customDialog.setOnItemClick(new onDialogItemClickListener() {
+                    @Override
+                    public void onDelete() {
+                        postDelete(position);
+                    }
+
+                    @Override
+                    public void onDetail() {
+
+                    }
+
+                    @Override
+                    public void onCopy() {
+                        showToast("未开发");
+
+                    }
+                });
+                customDialog.show();
+            }
+
+            @Override
+            public void onCommentClick(int position) {
+
+            }
+
+            @Override
+            public void onDetailClick(int position) {
+
+            }
+        });
         refreshLayout.setOnRefreshLoadmoreListener(new OnRefreshLoadmoreListener() {
             @Override
             public void onLoadmore(RefreshLayout refreshlayout) {
@@ -220,7 +261,34 @@ public class CommentDetailActivity extends BaseActivity implements View.OnClickL
                     }
                 });
     }
+    public void postDelete(final int position){
+        Comment.DataBean dataBean= (Comment.DataBean) mDataList.get(position);
+        OkGo.post(HttpUtils.DELETE_SUB_COMMENT)
+                .tag(this)
+                .isMultipart(true)
+                .params("token",ToolUtils.getString("token"))
+                .params("id",dataBean.getId())
+                .execute(new StringCallback() {
+                    @Override
+                    public void onSuccess(String s, Call call, Response response) {
+                        try {
+                            JSONObject jsonObject=new JSONObject(s);
+                            if(jsonObject.getInt("code")==200){
+                                showToast("删除成功");
+                                mDataList.remove(position);
+                                mAdapter.notifyItemRemoved(position);
+                                int comment=Integer.parseInt(tv_comment.getText().toString());
+                                tv_comment.setText(comment-1+"");
 
+                            }else{
+                                showToast(jsonObject.getString("message"));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
     @Override
     public void onBackPressed() {
 
@@ -264,10 +332,51 @@ public class CommentDetailActivity extends BaseActivity implements View.OnClickL
                         .show(getSupportFragmentManager());
                 break;
             case R.id.layout_comment:
-                PublishCommentActivity.startActivityForSubComment(this,getIntent().getIntExtra("id",0),uid,1000);
+                PublishCommentActivity.startActivityForSubComment(this,getIntent().getIntExtra("id",0),uid,tv_name.getText().toString(),1000);
+                break;
+
+            case R.id.cb_like:
+                postLike();
                 break;
         }
 
+    }
+
+    public void postLike() {
+        OkGo.post(HttpUtils.AWESOME_COMMENT)
+                .tag(this)
+                .isMultipart(true)
+                .params("token", ToolUtils.getString("token"))
+                .params("id", getIntent().getIntExtra("id",0))
+                .params("isLike", cb_like.isChecked()? 0 : 1)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onSuccess(String s, Call call, Response response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(s);
+                            if (jsonObject.getInt("code") == 200) {
+                                showToast(cb_like.isChecked()?"点赞成功":"取消点赞成功");
+
+                                int awesome=Integer.parseInt(cb_like.getText().toString());
+                                if(cb_like.isChecked()){//点赞
+                                    cb_like.setText(awesome+1+"");
+
+                                }else{
+                                    cb_like.setText(awesome-1+"");
+
+
+                                }
+                            } else {
+                                showToast(jsonObject.getString("message"));
+                                cb_like.setChecked(!cb_like.isChecked());
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
     }
 
     @Override

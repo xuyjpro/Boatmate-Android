@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.example.downtoearth.toget.R;
 import com.example.downtoearth.toget.bean.Comment;
 import com.example.downtoearth.toget.utils.HttpUtils;
+import com.example.downtoearth.toget.utils.ToolUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -30,11 +31,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     private List mDataList;
     private OnItemClickListener mListener;
 
+    private boolean isSubComment;
     public void setOnItemClikcListener(OnItemClickListener listener){
         this.mListener=listener;
     }
-    public CommentAdapter(List list) {
+    public CommentAdapter(List list,boolean isSubComment) {
         this.mDataList = list;
+        this.isSubComment=isSubComment;
     }
     public List getDataList(){
         return mDataList;
@@ -75,7 +78,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
 
             Drawable[] drawables=cb_like.getCompoundDrawables();
-            drawables[2].setBounds(0,0,60,60);
+            drawables[02].setBounds(0,0,ToolUtils.dip2px(24),ToolUtils.dip2px(24));
             cb_like.setCompoundDrawables(null,null,drawables[2],null);
         }
     }
@@ -138,6 +141,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         if(dataBean.getToNickname()!=null){
             holder.tv_to_nickname.setText(" @"+dataBean.getToNickname());
         }
+
+        if(isSubComment){
+            holder.cb_like.setVisibility(View.GONE);
+        }
+
+
     }
 
     public String getTime(long date) {

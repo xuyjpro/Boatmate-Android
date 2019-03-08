@@ -25,8 +25,12 @@ public class CustomDialog extends Dialog implements View.OnClickListener {
     private onDialogItemClickListener listener;
 
 
-    public CustomDialog(Context context) {
+    private boolean isSubComment;
+
+
+    public CustomDialog(Context context,boolean isSubComment) {
         super(context, R.style.MyDialog);
+        this.isSubComment=isSubComment;
     }
 
     @Override
@@ -42,7 +46,12 @@ public class CustomDialog extends Dialog implements View.OnClickListener {
         initData();
         //初始化界面控件的事件
         initEvent();
-        
+        if(isSubComment){
+            setSubCommentItem();
+        }
+    }
+    public void setSubCommentItem(){
+        tv_comment.setVisibility(View.GONE);
     }
     public void setOnItemClick(onDialogItemClickListener listener){
         this.listener=listener;

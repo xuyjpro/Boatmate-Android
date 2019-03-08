@@ -82,14 +82,14 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
         layout_comment=findViewById(R.id.layout_comment);
 
         Drawable[] drawables=cb_like.getCompoundDrawables();
-        drawables[0].setBounds(0,0,60,60);
+        drawables[0].setBounds(0,0,ToolUtils.dip2px(24),ToolUtils.dip2px(24));
         cb_like.setCompoundDrawables(drawables[0],null,null,null);
 
     }
     public void initData(){
         rv_comment.setLayoutManager(new LinearLayoutManager(this));
         mDataList=new ArrayList();
-        rv_comment.setAdapter(mAdapter=new CommentAdapter(mDataList));
+        rv_comment.setAdapter(mAdapter=new CommentAdapter(mDataList,false));
 
         refreshLayout.setOnRefreshLoadmoreListener(new OnRefreshLoadmoreListener() {
             @Override
@@ -116,7 +116,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
 
             @Override
             public void onItemClick(final int position) {
-                CustomDialog customDialog=new CustomDialog(DynamicDetailActivity.this);
+                CustomDialog customDialog=new CustomDialog(DynamicDetailActivity.this,false);
                 customDialog.setOnItemClick(new onDialogItemClickListener() {
                     @Override
                     public void onDelete() {
@@ -136,6 +136,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
 
                     @Override
                     public void onCopy() {
+                        showToast("未开发");
 
                     }
                 });
@@ -260,8 +261,8 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
                                 mDataList.remove(position);
                                 mAdapter.notifyItemRemoved(position);
                                 int comment=Integer.parseInt(tv_comment.getText().toString());
-                                tv_comment.setText(comment-1);
-                                tv_comment1.setText(comment-1);
+                                tv_comment.setText(comment-1+"");
+                                tv_comment1.setText(comment-1+"");
 
                             }else{
                                 showToast(jsonObject.getString("message"));
