@@ -99,6 +99,7 @@ public class HomeFragment extends BaseFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        showToast("home");
 
         switch (requestCode){
             case PUBLISH_DYNAMIC:
@@ -109,6 +110,16 @@ public class HomeFragment extends BaseFragment {
 
 
                 }
+            case 1000://点击详情
+                    if(viewPager.getCurrentItem()==0){
+                        ((DynamicFragment)fragments.get(1)).autoRefresh();
+                    }else{
+                        ((DynamicFragment)fragments.get(0)).autoRefresh();
+
+                    }
+
+                break;
+
         }
     }
 

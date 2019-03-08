@@ -225,7 +225,7 @@ public class FullInfoActivity extends BaseActivity implements View.OnClickListen
         OkGo.post(HttpUtils.EDIT_INFO)
                 .tag(this)
                 .isMultipart(true)
-                .params("token",ToolUtils.getString("token"))
+                .params("token",getIntent().getStringExtra("token"))
                 .params(httpParams)
                 .execute(new StringCallback() {
                     @Override
