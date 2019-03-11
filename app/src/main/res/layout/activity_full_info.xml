@@ -20,18 +20,34 @@
             android:src="@mipmap/back_dark" />
     </RelativeLayout>
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/iv_head"
+    <RelativeLayout
+        android:id="@+id/layout_head"
         android:layout_width="110dp"
-        android:layout_height="110dp"
         android:layout_below="@id/layout_back"
         android:layout_centerHorizontal="true"
-        android:src="@mipmap/person" />
+
+        android:layout_height="110dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_head"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:src="@mipmap/person" />
+        <View
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@mipmap/camera"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="3dp"
+            android:layout_marginBottom="3dp"
+            android:layout_alignParentBottom="true"/>
+    </RelativeLayout>
+  
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/iv_head"
+        android:layout_below="@id/layout_head"
         android:layout_marginHorizontal="30dp"
         android:layout_marginTop="20dp"
         android:orientation="vertical">

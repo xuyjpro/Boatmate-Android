@@ -75,7 +75,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<DynamicAdapter.ViewHold
             tv_share = itemView.findViewById(R.id.tv_share);
 
             Drawable[] drawables=cb_like.getCompoundDrawables();
-            drawables[0].setBounds(0,0,ToolUtils.dip2px(24),ToolUtils.dip2px(24));
+            drawables[0].setBounds(0,0,ToolUtils.dip2px(22),ToolUtils.dip2px(22));
             cb_like.setCompoundDrawables(drawables[0],null,null,null);
         }
     }

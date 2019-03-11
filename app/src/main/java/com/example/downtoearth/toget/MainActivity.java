@@ -26,6 +26,7 @@ import com.example.downtoearth.toget.bean.UserInfo;
 import com.example.downtoearth.toget.fragment.BaseFragment;
 import com.example.downtoearth.toget.fragment.HomeFragment;
 import com.example.downtoearth.toget.fragment.NewsFrament;
+import com.example.downtoearth.toget.fragment.ServiceFragment;
 import com.example.downtoearth.toget.utils.ActivityCollector;
 import com.example.downtoearth.toget.utils.HttpUtils;
 import com.example.downtoearth.toget.utils.ToolUtils;
@@ -85,7 +86,10 @@ public class MainActivity extends BaseActivity {
 
 
         mFragmentList=new ArrayList<>();
+        mFragmentList.add(new ServiceFragment());
+
         mFragmentList.add(new HomeFragment());
+
 
         final ViewPager viewPager=findViewById(R.id.view_pager);
         viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(),mFragmentList));

@@ -191,17 +191,7 @@
 
                         android:layout_height="match_parent"
                         android:layout_weight="1">
-                        <!--<ImageView-->
-                            <!--android:layout_width="24dp"-->
-                            <!--android:layout_height="24dp"-->
-                            <!--android:src="@mipmap/like"/>-->
-                        <!--<TextView-->
-                            <!--android:id="@+id/tv_like"-->
-                            <!--android:layout_width="wrap_content"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:textColor="@color/textGray"-->
-                            <!--android:textSize="13sp"-->
-                            <!--android:layout_marginLeft="4dp"/>-->
+
                         <CheckBox
                             android:id="@+id/cb_like"
                             android:layout_width="32dp"
@@ -269,11 +259,23 @@
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
-                    android:background="@color/lineGray"
-                    android:layout_height="1dp"/>
+                    android:layout_height="6dp"
+                    android:background="#EAEAEA" />
+                <TextView
+                    android:id="@+id/tv_no_comment"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:textSize="16sp"
+                    android:textColor="@color/tabcolor"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:layout_margin="12dp"
+                    android:background="#f5f7f7"
+                    android:text="暂无评论哦~"/>
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_comment"
                     android:layout_width="match_parent"
+                    android:visibility="gone"
                     android:layout_height="wrap_content">
 
                 </android.support.v7.widget.RecyclerView>

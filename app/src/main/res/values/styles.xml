@@ -51,4 +51,17 @@
         <item name="android:backgroundDimEnabled">true</item>
         <!--模糊-->
     </style>
+
+    <!--服务模块-->
+
+    <style name="tvStyle">
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/textBlack</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:drawablePadding">2dp</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+    </style>
 </resources>

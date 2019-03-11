@@ -86,13 +86,13 @@ public class FullInfoActivity extends BaseActivity implements View.OnClickListen
         btn_commit.setOnClickListener(this);
 
         iv_head=findViewById(R.id.iv_head);
-        iv_head.setOnClickListener(this);
+        findViewById(R.id.layout_head).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_head:
+            case R.id.layout_head:
                 PictureSelector.create(this)
                         .openGallery(PictureMimeType.ofImage())
                         .selectionMode(PictureConfig.SINGLE)

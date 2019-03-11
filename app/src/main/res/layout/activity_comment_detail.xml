@@ -140,8 +140,8 @@
                             android:id="@+id/layout_like"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:gravity="center"
                             android:layout_marginRight="10dp"
+                            android:gravity="center"
                             android:orientation="horizontal">
 
                             <CheckBox
@@ -161,8 +161,8 @@
                             android:id="@+id/layout_comment"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:gravity="center"
                             android:layout_marginRight="10dp"
+                            android:gravity="center"
 
                             android:orientation="horizontal">
 
@@ -179,43 +179,45 @@
                                 android:textColor="@color/textGray"
                                 android:textSize="13sp" />
                         </LinearLayout>
+
                         <LinearLayout
                             android:id="@+id/layout_delete"
-                            android:orientation="horizontal"
                             android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
                             android:gravity="center"
-                            android:layout_height="match_parent">
+                            android:orientation="horizontal">
+
                             <ImageView
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
-                                android:src="@mipmap/delete"/>
+                                android:src="@mipmap/delete" />
 
                         </LinearLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="6dp"
+                        android:background="#EAEAEA" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_comment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                    </android.support.v7.widget.RecyclerView>
                 </LinearLayout>
+            </android.support.v4.widget.NestedScrollView>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/lineGray" />
+            <com.scwang.smartrefresh.layout.footer.ClassicsFooter
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rv_comment"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                </android.support.v7.widget.RecyclerView>
-            </LinearLayout>
-        </android.support.v4.widget.NestedScrollView>
-
-        <com.scwang.smartrefresh.layout.footer.ClassicsFooter
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        </com.scwang.smartrefresh.layout.footer.ClassicsFooter>
-    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+            </com.scwang.smartrefresh.layout.footer.ClassicsFooter>
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
 
-</RelativeLayout>
+    </RelativeLayout>
 
 
-    </android.support.design.widget.CoordinatorLayout>
+</android.support.design.widget.CoordinatorLayout>

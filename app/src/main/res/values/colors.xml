@@ -9,4 +9,6 @@
     <color name="textBlack">#4D4D4D</color>
     <color name="WHITE">#FFFFFF</color>
     <color name="checkGray">#cccccc</color>
+    <color name="tabcolor">#3b4b57</color>
+    <color name="black">#000000</color>
 </resources>

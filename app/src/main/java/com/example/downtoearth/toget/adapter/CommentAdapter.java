@@ -78,7 +78,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
 
             Drawable[] drawables=cb_like.getCompoundDrawables();
-            drawables[02].setBounds(0,0,ToolUtils.dip2px(24),ToolUtils.dip2px(24));
+            drawables[02].setBounds(0,0,ToolUtils.dip2px(20),ToolUtils.dip2px(20));
             cb_like.setCompoundDrawables(null,null,drawables[2],null);
         }
     }

@@ -52,7 +52,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
     private TextView tv_comment1;
     private CheckBox cb_like;
     private ViewGroup layout_comment;
-
+    private TextView tv_no_comment;
     private CommentAdapter mAdapter;
     private List mDataList;
     private int mNextPage=1;
@@ -80,6 +80,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
         tv_like=findViewById(R.id.tv_like);
         cb_like=findViewById(R.id.cb_like);
         layout_comment=findViewById(R.id.layout_comment);
+        tv_no_comment=findViewById(R.id.tv_no_comment);
 
         Drawable[] drawables=cb_like.getCompoundDrawables();
         drawables[0].setBounds(0,0,ToolUtils.dip2px(24),ToolUtils.dip2px(24));
@@ -263,6 +264,10 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
                                 int comment=Integer.parseInt(tv_comment.getText().toString());
                                 tv_comment.setText(comment-1+"");
                                 tv_comment1.setText(comment-1+"");
+                                if(mDataList.size()==0){
+                                    tv_no_comment.setVisibility(View.VISIBLE);
+                                    rv_comment.setVisibility(View.GONE);
+                                }
 
                             }else{
                                 showToast(jsonObject.getString("message"));
@@ -294,12 +299,21 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
         if(comment.getData()!=null&&comment.getData().size()!=0){
             if(isRefresh){
                 mDataList.clear();
+                tv_no_comment.setVisibility(View.GONE);
+                rv_comment.setVisibility(View.VISIBLE);
             }
             mDataList.addAll(comment.getData());
             mAdapter.notifyDataSetChanged();
-        }else {
-            mNextPage--;
 
+        }else {
+            if(isRefresh){
+                mNextPage=1;
+                rv_comment.setVisibility(View.GONE);
+                tv_no_comment.setVisibility(View.VISIBLE);
+            }else{
+
+                mNextPage--;
+            }
             showToast("没有更多数据了");
         }
     }
@@ -452,6 +466,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
                 tv_comment.setText(comment+"");
                 tv_comment1.setText(comment+"");
                 refreshLayout.autoRefresh();
+
             }
         }else if(requestCode==1001){//添加子评论
 

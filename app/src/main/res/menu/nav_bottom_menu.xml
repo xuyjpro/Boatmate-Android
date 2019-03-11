@@ -9,7 +9,7 @@
     <item android:id="@+id/find"
         android:icon="@mipmap/find"
         app:showAsAction="always"
-        android:title="发现"
+        android:title="广场"
         android:enabled="true"/>
     <item android:id="@+id/news"
         android:icon="@mipmap/news"

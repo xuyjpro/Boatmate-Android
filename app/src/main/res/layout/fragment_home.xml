@@ -55,6 +55,8 @@
         android:layout_gravity="bottom|end"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
+        android:foreground="?android:attr/selectableItemBackground"
+
         android:elevation="8dp"
         android:src="@mipmap/floating_icon" />
 </FrameLayout>
