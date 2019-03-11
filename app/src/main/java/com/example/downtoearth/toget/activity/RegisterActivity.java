@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 
 import com.example.downtoearth.toget.MainActivity;
 import com.example.downtoearth.toget.R;
+import com.example.downtoearth.toget.bean.UserInfo;
 import com.example.downtoearth.toget.utils.HttpUtils;
 import com.example.downtoearth.toget.utils.ToolUtils;
 import com.google.gson.Gson;
@@ -34,7 +35,7 @@ import okhttp3.Response;
  * Created by DownToEarth on 2018/10/18.
  */
 
-public class RegisterActivity extends Activity {
+public class RegisterActivity extends BaseActivity {
     private Button btn_register;
     private EditText et_account;
     private EditText et_password;
@@ -96,8 +97,8 @@ public class RegisterActivity extends Activity {
         promptDialog.showLoading("注册中...");
         OkGo.post(HttpUtils.REGISTER)
                 .tag(this)
-                .params("userTable.username", account)
-                .params("userTable.password", password)
+                .params("phone", account)
+                .params("password", password)
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Response response, Exception e) {
@@ -107,33 +108,19 @@ public class RegisterActivity extends Activity {
 
                     @Override
                     public void onSuccess(String s, Call call, Response response) {
-                        Log.e("result", s);
+                        showToast(s);
                         try {
                             JSONObject jsonObject = new JSONObject(s);
-                            String msg = jsonObject.getString("message");
-                            if (msg.equals("success")) {
-                                try {
-                                    Thread.sleep(500);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
+                            if (jsonObject.getInt("code") == 200) {
+
                                 promptDialog.showSuccess("注册成功");
-                                JSONObject jsonObject1=jsonObject.getJSONObject("object");
-                                jsonObject1.getInt("id");
-                                ToolUtils.putInt("uid",jsonObject1
-                                        .getInt("id"));
-
-                                Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                                intent.putExtra("user_info",s);
-                                startActivity(intent);
-                                finish();
-
+                                parseData(s);
 
                             } else {
-                                promptDialog.showError(msg);
-                             /*   Snackbar.make(btn_register,msg,Snackbar.LENGTH_SHORT)
-                                        .show();*/
+                                promptDialog.showError(jsonObject.getString("message"));
                             }
+
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -142,4 +129,24 @@ public class RegisterActivity extends Activity {
                     }
                 });
     }
+
+    public void parseData(String s) {
+
+        UserInfo userInfo = new Gson().fromJson(s, UserInfo.class);
+
+
+        UserInfo.DataBean.UserInfoBean uib = userInfo.getData().getUserInfo();
+
+
+        Intent intent = new Intent(this, FullInfoActivity
+                .class);
+        intent.putExtra("token",userInfo.getData().getToken());
+
+        ToolUtils.putInt("uid", uib.getId());
+
+        startActivity(intent);
+
+
+    }
+
 }

@@ -22,13 +22,13 @@
             <ImageView
                 android:id="@+id/iv_head"
                 android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:src="@mipmap/default_help_pic" />
+                android:layout_height="match_parent" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_margin="4dp"
+                android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/iv_head"
                 android:orientation="vertical">
 
@@ -50,6 +50,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="城北徐公"
+                        android:lines="1"
                         android:textColor="@color/textGray"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -57,7 +58,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <TextView
@@ -72,6 +72,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="2018-3-10"
+                        android:lines="1"
+
                         android:textColor="@color/textGray"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -86,6 +88,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="标题:  "
+                        android:lines="1"
                         android:textColor="@color/black"
                         android:textSize="14sp" />
 
@@ -94,7 +97,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:lines="1"
-                        android:text="跪求大学物理考试资料"
                         android:textColor="@color/textGray"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -117,7 +119,6 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:lines="2"
-                        android:text="大一党，临近期末考试，大物一知半解，跪求大物考试复习资料。"
                         android:textColor="@color/textGray"
                         android:textSize="14sp" />
                 </LinearLayout>

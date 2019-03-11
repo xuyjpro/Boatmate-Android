@@ -11,4 +11,5 @@
     <color name="checkGray">#cccccc</color>
     <color name="tabcolor">#3b4b57</color>
     <color name="black">#000000</color>
+    <color name="text_gray">#89a1b3</color>
 </resources>

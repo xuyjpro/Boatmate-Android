@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.SchoolHelpActivity">
+
+    <RelativeLayout
+        android:id="@+id/layout_top"
+        android:layout_width="match_parent"
+        android:layout_alignParentTop="true"
+        android:background="?android:attr/windowBackground"
+        android:layout_height="?attr/actionBarSize">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/lineGray"/>
+        <RelativeLayout
+            android:id="@+id/layout_back"
+            android:layout_width="wrap_content"
+            android:layout_height="?attr/actionBarSize">
+
+            <ImageView
+                android:id="@+id/iv_back"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="24dp"
+                android:src="@mipmap/back_dark" />
+
+        </RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/layout_back"
+            android:layout_marginLeft="20dp"
+            android:textColor="@color/textGray"
+            android:textSize="18sp"/>
+
+        <RelativeLayout
+            android:id="@+id/layout_set"
+            android:layout_width="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentRight="true">
+
+            <TextView
+                android:id="@+id/tv_set"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="12dp"
+                android:text="发布"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16sp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="12dp"
+        android:gravity="center_vertical"
+        android:layout_height="60dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="标题"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:ellipsize="end"
+            android:textColor="@color/textBlack"
+            android:layout_marginHorizontal="4dp"/>
+        <View
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:background="@mipmap/back2_right"
+            android:layout_gravity="right|center_vertical"/>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:background="#eaeaea"/>
+    <EditText
+        android:id="@+id/et_content"
+        android:textColor="@color/textBlack"
+        android:hint="输入帮帮内容"
+        android:gravity="left"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

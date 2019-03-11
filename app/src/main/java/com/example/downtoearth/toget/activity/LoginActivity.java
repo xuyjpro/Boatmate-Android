@@ -135,10 +135,13 @@ public class LoginActivity extends BaseActivity {
             Intent intent = new Intent(this, FullInfoActivity
                     .class);
             intent.putExtra("token",userInfo.getData().getToken());
+
+            ToolUtils.putInt("uid",userInfo.getData().getUserInfo().getId());
+
             startActivity(intent);
         }else{
             ToolUtils.putString("token",userInfo.getData().getToken());
-
+            ToolUtils.putInt("uid",userInfo.getData().getUserInfo().getId());
             Intent intent = new Intent(this, MainActivity
                     .class);
 

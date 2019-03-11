@@ -1,5 +1,5 @@
 package com.example.downtoearth.toget.impl;
 
 public  interface OnItemClickListener {
-    void onItemClick();
+    void onItemClick(int position);
 }

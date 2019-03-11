@@ -1,5 +1,6 @@
 package com.example.downtoearth.toget.fragment;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,17 +10,26 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.downtoearth.toget.R;
+import com.example.downtoearth.toget.activity.SchoolHelpActivity;
+import com.example.downtoearth.toget.activity.SchoolHelpDetailActivity;
 import com.example.downtoearth.toget.adapter.SchoolHelpAdapter;
+import com.example.downtoearth.toget.bean.SchoolHelp;
 import com.example.downtoearth.toget.impl.OnItemClickListener;
 import com.example.downtoearth.toget.utils.GlideImageLoader;
 import com.example.downtoearth.toget.utils.HttpUtils;
 import com.example.downtoearth.toget.utils.ToolUtils;
+import com.google.gson.Gson;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.callback.StringCallback;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Response;
 
 public class ServiceFragment extends BaseFragment implements View.OnClickListener {
 
@@ -28,11 +38,14 @@ public class ServiceFragment extends BaseFragment implements View.OnClickListene
     private TextView tv2;
     private TextView tv3;
     private TextView tv4;
-
+    private ViewGroup layout_help;
     private List<String> images;
     private List<String> titles;
+    private List helpList;
     private RecyclerView rv_helps;
+
     private SchoolHelpAdapter helpAdapter;
+
     @Override
     public View initView() {
         View view=LayoutInflater.from(getContext()).inflate(R.layout.fragment_service,null);
@@ -43,6 +56,7 @@ public class ServiceFragment extends BaseFragment implements View.OnClickListene
         tv2=view.findViewById(R.id.tv2);
         tv3=view.findViewById(R.id.tv3);
         tv4=view.findViewById(R.id.tv4);
+        layout_help=view.findViewById(R.id.layout_help);
 
         ViewGroup layout_tvs=view.findViewById(R.id.layout_tvs);
         for(int i=0;i<layout_tvs.getChildCount();i++){
@@ -54,6 +68,7 @@ public class ServiceFragment extends BaseFragment implements View.OnClickListene
         return view;
 
     }
+
 
     @Override
     public void initData() {
@@ -80,24 +95,58 @@ public class ServiceFragment extends BaseFragment implements View.OnClickListene
         banner.start();
 
         //
+        helpList=new ArrayList();
         rv_helps.setLayoutManager(new LinearLayoutManager(getContext()));
-        rv_helps.setAdapter(helpAdapter=new SchoolHelpAdapter());
+     //   rv_helps.setAdapter(helpAdapter=new SchoolHelpAdapter(helpList));
         rv_helps.setNestedScrollingEnabled(false);
-        helpAdapter.setOnItemListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick() {
-                showToast("暂未开发");
-            }
-        });
+
         initListener();
+        getHelpList();
     }
 
+    public void getHelpList(){
+        OkGo.post(HttpUtils.GET_SCHOOL_HELPS)
+                .tag(this)
+                .isMultipart(true)
+                .params("currentPage",1)
+                .params("pageSize",6)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onSuccess(String s, Call call, Response response) {
+                        parseHelpList(s);
+
+                    }
+                });
+    }
+    public void parseHelpList(String s){
+        log(s);
+        SchoolHelp  sh=new Gson().fromJson(s,SchoolHelp.class);
+        if(sh.getCode()==200){
+            if(sh.getData()!=null&&sh.getData()
+                    .size()!=0) {
+                helpList=sh.getData();
+                helpAdapter=new SchoolHelpAdapter(helpList);
+                rv_helps.setAdapter(helpAdapter);
+                helpAdapter.setOnItemListener(new OnItemClickListener() {
+                    @Override
+                    public void onItemClick(int position) {
+                        SchoolHelp.DataBean d=(SchoolHelp.DataBean)helpList.get(position);
+                        Intent intent=new Intent(getContext(),SchoolHelpDetailActivity.class);
+                        intent.putExtra("id",d.getId());
+                        startActivity(intent);
+                       // showToast("暂未开发");
+                    }
+                });
+                //helpAdapter.notifyDataSetChanged();
+            }
+        }
+    }
     public void initListener(){
         tv1.setOnClickListener(this);
         tv2.setOnClickListener(this);
         tv3.setOnClickListener(this);
         tv4.setOnClickListener(this);
-
+        layout_help.setOnClickListener(this);
     }
     @Override
     public void onStart() {
@@ -114,7 +163,10 @@ public class ServiceFragment extends BaseFragment implements View.OnClickListene
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-
+            case R.id.layout_help:
+                Intent intent=new Intent(getContext(),SchoolHelpActivity.class);
+                startActivity(intent);
+                break;
             default:
                 showToast("暂未开发");
 

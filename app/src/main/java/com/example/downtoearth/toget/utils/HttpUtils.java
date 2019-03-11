@@ -28,4 +28,11 @@ public class HttpUtils {
     public static final String DELETE_COMMENT="http://"+IP+"/boatmate/"+"deleteComment";
     public static final String DELETE_SUB_COMMENT="http://"+IP+"/boatmate/"+"deleteSubComment";
 
+
+    /*
+        校园帮帮
+     */
+    public static final String GET_SCHOOL_HELPS="http://"+IP+"/boatmate/"+"getSchoolHelps";
+    public static final String SCHOOL_HELPS_DETAIL="http://"+IP+"/boatmate/"+"schoolHelpDetail";
+    public static final String MODIFY_STATUS_HELP="http://"+IP+"/boatmate/"+"modifyStatusHelp";
 }

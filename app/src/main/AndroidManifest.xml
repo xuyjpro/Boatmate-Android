@@ -2,9 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.downtoearth.toget">
-    <uses-permission android:name="android.permission.INTERNET" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/logo_app"
@@ -34,8 +35,11 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".activity.MadeItemActivity" />
         <activity android:name=".activity.EditInfoActivity" />
-        <activity android:name=".activity.DynamicDetailActivity"></activity>
-        <activity android:name=".activity.CommentDetailActivity"></activity>
+        <activity android:name=".activity.DynamicDetailActivity" />
+        <activity android:name=".activity.CommentDetailActivity" />
+        <activity android:name=".activity.SchoolHelpDetailActivity" />
+        <activity android:name=".activity.SchoolHelpActivity"></activity>
+        <activity android:name=".activity.PublishSchoolHelpActivity"/>
     </application>
 
 </manifest>

@@ -82,6 +82,6 @@ public class ToolUtils {
     }
     public static void loadImage(ImageView imageView,String url){
 
-        //Glide.with(context).load(HttpUtils.DOWNLOAD_URL+url).error(R.mipmap.person).into(imageView);
+        Glide.with(context).load(HttpUtils.DOWNLOAD_URL+url).into(imageView);
     }
 }
