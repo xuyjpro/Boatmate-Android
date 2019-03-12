@@ -132,25 +132,11 @@ public class DynamicAdapter extends RecyclerView.Adapter<DynamicAdapter.ViewHold
             holder.cb_like.setChecked(false);
         }
         holder.tv_comment.setText(dataBean.getComment()+"");
-        holder.tv_time.setText(getTime(dataBean.getTime()));
+        holder.tv_time.setText(ToolUtils.getDate(dataBean.getTime(),"yyyy-MM-dd HH:mm:ss"));
 
     }
 
-    public String getTime(long date) {
-        long time=System.currentTimeMillis()-date;
-        time=time/1000;
-        if (time < 60) {
-            return time+1 + "秒前";
-        } else if (time < 60 * 60) {
-            return time / 60 + "分钟前";
-        }else if(time<60*60*24){
-            return time/60/60+"小时前";
-        }else if(time<60*60*24*30){
-            return time/60/60/24+"天前";
-        }else{
-            return ToolUtils.getDate(date,"yyyy-MM-dd");
-        }
-    }
+
 
     @Override
     public int getItemCount() {

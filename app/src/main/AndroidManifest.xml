@@ -38,8 +38,10 @@
         <activity android:name=".activity.DynamicDetailActivity" />
         <activity android:name=".activity.CommentDetailActivity" />
         <activity android:name=".activity.SchoolHelpDetailActivity" />
-        <activity android:name=".activity.SchoolHelpActivity"></activity>
-        <activity android:name=".activity.PublishSchoolHelpActivity"/>
+        <activity android:name=".activity.SchoolHelpActivity" />
+        <activity android:name=".activity.PublishSchoolHelpActivity" />
+        <activity android:name=".activity.StuffLossActivity"></activity>
+        <activity android:name=".activity.PublishStuffActivity"/>
     </application>
 
 </manifest>

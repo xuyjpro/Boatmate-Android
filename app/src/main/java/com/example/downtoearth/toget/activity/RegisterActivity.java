@@ -21,8 +21,7 @@ import com.example.downtoearth.toget.utils.ToolUtils;
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
-import com.orhanobut.dialogplus.DialogPlus;
-import com.orhanobut.dialogplus.OnItemClickListener;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;

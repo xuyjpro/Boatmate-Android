@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,14 +10,16 @@
         <RelativeLayout
             android:id="@+id/layout_top"
             android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
             android:layout_alignParentTop="true"
-            android:background="?android:attr/windowBackground"
-            android:layout_height="?attr/actionBarSize">
+            android:background="?android:attr/windowBackground">
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_alignParentBottom="true"
-                android:background="@color/lineGray"/>
+                android:background="@color/lineGray" />
+
             <RelativeLayout
                 android:id="@+id/layout_back"
                 android:layout_width="wrap_content"
@@ -29,17 +30,18 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="24dp"
+                    android:layout_marginLeft="14dp"
                     android:src="@mipmap/back_dark" />
             </RelativeLayout>
+
             <TextView
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/layout_back"
                 android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@id/layout_back"
                 android:textColor="@color/textGray"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
 
             <RelativeLayout
                 android:id="@+id/layout_set"
@@ -58,98 +60,179 @@
                     android:textSize="16sp" />
             </RelativeLayout>
         </RelativeLayout>
-        <android.support.v4.widget.NestedScrollView
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_below="@id/layout_top"
+            android:layout_height="match_parent"
             android:layout_above="@id/layout_bottom"
-            android:layout_height="match_parent">
+            android:layout_below="@id/layout_top"
+            android:orientation="vertical">
 
             <LinearLayout
-                android:orientation="vertical"
+                android:id="@+id/layout_send"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:id="@+id/layout_send"
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_marginHorizontal="18dp"
-                    android:gravity="center_vertical"
-                    android:visibility="gone"
-                    android:layout_height="30dp">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="回复给"
-                        android:textSize="14sp"
-                        android:textColor="@color/normalGray"/>
-                    <!---->
-                    <TextView
-                        android:id="@+id/tv_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:layout_marginLeft="2dp"
-                        android:textColor="@color/colorAccent"/>
-                </LinearLayout>
-                <EditText
-                    android:id="@+id/et_content"
-                    android:layout_width="match_parent"
-                    android:layout_marginHorizontal="18dp"
-                    android:textSize="18sp"
-                    android:layout_marginTop="10dp"
-                    android:textColorHint="@color/normalGray"
-                    android:textColor="#000"
-                    android:background="@null"
-                    android:hint="添加动态..."
-                    android:layout_height="match_parent" />
+                android:layout_height="30dp"
+                android:layout_marginHorizontal="18dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="回复给"
+                    android:textColor="@color/normalGray"
+                    android:textSize="14sp" />
+                <!---->
+                <TextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="14sp" />
             </LinearLayout>
 
-        </android.support.v4.widget.NestedScrollView>
+            <LinearLayout
+                android:id="@+id/layout_stuff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="12dp"
+                        android:text="类型："
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tv_stuff"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="32dp"
+                        android:gravity="right"
+                        android:text="寻物启事"
+                        android:textColor="@color/textBlack"
+                        android:textSize="16sp" />
+
+                    <View
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="12dp"
+                        android:background="@mipmap/back2_right" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="6dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="#eaeaea" />
+
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/et_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="18dp"
+                android:layout_marginTop="10dp"
+                android:background="@null"
+                android:gravity="left"
+                android:hint="添加动态..."
+                android:padding="10dp"
+                android:textColor="#000"
+                android:textColorHint="@color/normalGray"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_above="@id/layout_bottom"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginVertical="5dp">
+
+            <ImageView
+                android:id="@+id/picture1"
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:layout_marginRight="5dp" />
+
+            <ImageView
+                android:id="@+id/picture2"
+                android:layout_width="80dp"
+                android:scaleType="centerCrop"
+
+                android:layout_height="match_parent"
+                android:layout_marginRight="5dp" />
+        </LinearLayout>
+
         <RelativeLayout
             android:id="@+id/layout_bottom"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:layout_alignParentBottom="true"
             android:background="?android:attr/windowBackground">
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_alignParentTop="true"
-                android:background="@color/lineGray"/>
+                android:background="@color/lineGray" />
+
             <RelativeLayout
                 android:id="@+id/layout_photo"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent">
+
                 <ImageView
                     android:layout_width="28dp"
                     android:layout_height="28dp"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="12dp"
-                    android:src="@mipmap/picture"
-                    android:layout_centerVertical="true"/>
+                    android:src="@mipmap/picture" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:id="@+id/layout_location"
                 android:layout_width="wrap_content"
-                android:layout_toRightOf="@id/layout_photo"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/layout_photo">
+
                 <ImageView
                     android:layout_width="28dp"
                     android:layout_height="28dp"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="20dp"
-                    android:src="@mipmap/location_gray"
-                    android:layout_centerVertical="true"/>
+                    android:src="@mipmap/location_gray" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:id="@+id/layout_add"
                 android:layout_width="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true">
+
                 <ImageView
                     android:layout_width="28dp"
                     android:layout_height="28dp"
+                    android:layout_centerVertical="true"
                     android:layout_marginRight="12dp"
-                    android:src="@mipmap/add"
-                    android:layout_centerVertical="true"/>
+                    android:src="@mipmap/add" />
             </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>

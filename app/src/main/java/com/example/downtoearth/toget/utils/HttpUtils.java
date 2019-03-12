@@ -35,4 +35,14 @@ public class HttpUtils {
     public static final String GET_SCHOOL_HELPS="http://"+IP+"/boatmate/"+"getSchoolHelps";
     public static final String SCHOOL_HELPS_DETAIL="http://"+IP+"/boatmate/"+"schoolHelpDetail";
     public static final String MODIFY_STATUS_HELP="http://"+IP+"/boatmate/"+"modifyStatusHelp";
+    public static final String PUBLISH_SCHOOL_HELP="http://"+IP+"/boatmate/"+"publishSchoolHelp";
+    public static final String DELETE_SCHOOL_HELP="http://"+IP+"/boatmate/"+"deleteSchoolHelp";
+
+    /*
+    * 物品
+    * */
+    public static final String GET_STUFFS="http://"+IP+"/boatmate/"+"getStuffs";
+    public static final String PUBLISH_STUFF="http://"+IP+"/boatmate/"+"publishStuff";
+
+
 }

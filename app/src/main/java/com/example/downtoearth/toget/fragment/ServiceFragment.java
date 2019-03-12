@@ -7,11 +7,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.downtoearth.toget.R;
 import com.example.downtoearth.toget.activity.SchoolHelpActivity;
 import com.example.downtoearth.toget.activity.SchoolHelpDetailActivity;
+import com.example.downtoearth.toget.activity.StuffLossActivity;
 import com.example.downtoearth.toget.adapter.SchoolHelpAdapter;
 import com.example.downtoearth.toget.bean.SchoolHelp;
 import com.example.downtoearth.toget.impl.OnItemClickListener;
@@ -65,6 +67,13 @@ public class ServiceFragment extends BaseFragment implements View.OnClickListene
             drawables[1].setBounds(0,0,ToolUtils.dip2px(54),ToolUtils.dip2px(54));
             tv.setCompoundDrawables(null,drawables[1],null,null);
         }
+
+
+//        LinearLayout.LayoutParams rvParams= (LinearLayout.LayoutParams) rv_helps.getLayoutParams();
+//        rvParams.leftMargin=ToolUtils.dip2px(10);
+//        rvParams.rightMargin=ToolUtils.dip2px(10);
+//        rvParams.topMargin=ToolUtils.dip2px(10);
+//        rv_helps.setLayoutParams(rvParams);
         return view;
 
     }
@@ -119,7 +128,7 @@ public class ServiceFragment extends BaseFragment implements View.OnClickListene
                 });
     }
     public void parseHelpList(String s){
-        log(s);
+
         SchoolHelp  sh=new Gson().fromJson(s,SchoolHelp.class);
         if(sh.getCode()==200){
             if(sh.getData()!=null&&sh.getData()
@@ -133,8 +142,9 @@ public class ServiceFragment extends BaseFragment implements View.OnClickListene
                         SchoolHelp.DataBean d=(SchoolHelp.DataBean)helpList.get(position);
                         Intent intent=new Intent(getContext(),SchoolHelpDetailActivity.class);
                         intent.putExtra("id",d.getId());
-                        startActivity(intent);
-                       // showToast("暂未开发");
+                        intent.putExtra("position",position);
+
+                        startActivityForResult(intent,1000);
                     }
                 });
                 //helpAdapter.notifyDataSetChanged();
@@ -146,6 +156,7 @@ public class ServiceFragment extends BaseFragment implements View.OnClickListene
         tv2.setOnClickListener(this);
         tv3.setOnClickListener(this);
         tv4.setOnClickListener(this);
+
         layout_help.setOnClickListener(this);
     }
     @Override
@@ -165,11 +176,33 @@ public class ServiceFragment extends BaseFragment implements View.OnClickListene
         switch (view.getId()){
             case R.id.layout_help:
                 Intent intent=new Intent(getContext(),SchoolHelpActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,1001);
+                break;
+            case R.id.tv2:
+                Intent intent1=new Intent(getContext(),StuffLossActivity.class);
+                startActivity(intent1);
                 break;
             default:
                 showToast("暂未开发");
 
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==1000){
+//            if(data!=null){
+//                int position=data.getIntExtra("position",0);
+//                if(position!=0){
+//
+//                    helpList.remove(position);
+//                    helpAdapter.notifyItemRemoved(position);
+//                }
+//            }
+            getHelpList();
+        }else{
+            getHelpList();
         }
     }
 }

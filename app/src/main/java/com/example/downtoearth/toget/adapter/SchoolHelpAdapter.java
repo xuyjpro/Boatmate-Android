@@ -42,6 +42,7 @@ public class SchoolHelpAdapter extends RecyclerView.Adapter<SchoolHelpAdapter.Vi
             tv_content=itemView.findViewById(R.id.tv_content);
             tv_time=itemView.findViewById(R.id.tv_time);
 
+
         }
     }
 

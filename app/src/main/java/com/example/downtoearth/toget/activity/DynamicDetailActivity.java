@@ -56,6 +56,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
     private CommentAdapter mAdapter;
     private List mDataList;
     private int mNextPage=1;
+    private int uid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,7 +122,14 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
                 customDialog.setOnItemClick(new onDialogItemClickListener() {
                     @Override
                     public void onDelete() {
-                        postDelete(position);
+                        Comment.DataBean dataBean= (Comment.DataBean) mDataList.get(position);
+
+                        if(uid==ToolUtils.getInt("uid")||dataBean.getUid()==ToolUtils.getInt("uid")){
+                            postDelete(position);
+
+                        }else{
+                            showToast("非本人无权删除");
+                        }
                     }
 
                     @Override
@@ -292,6 +300,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
         tv_like.setText(dataBean.getAwesome()+"");
         cb_like.setText(dataBean.getAwesome()+"");
         cb_like.setChecked(dataBean.isLike());
+        this.uid=dataBean.getUid();
 
     }
     public void parseData(String s,boolean isRefresh){
@@ -329,6 +338,10 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
                 break;
             case R.id.layout_delete:
 
+                if(uid!=ToolUtils.getInt("uid")){
+                    showToast("非本人动态无法删除");
+                    return;
+                }
                 new CircleDialog.Builder()
                         .setCanceledOnTouchOutside(false)
                         .setCancelable(false)

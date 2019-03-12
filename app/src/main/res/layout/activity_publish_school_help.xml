@@ -77,6 +77,8 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:lines="1"
+            android:gravity="right"
+
             android:ellipsize="end"
             android:textColor="@color/textBlack"
             android:layout_marginHorizontal="4dp"/>
@@ -95,6 +97,9 @@
         android:textColor="@color/textBlack"
         android:hint="输入帮帮内容"
         android:gravity="left"
+        android:padding="12dp"
+        android:background="@null"
+
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

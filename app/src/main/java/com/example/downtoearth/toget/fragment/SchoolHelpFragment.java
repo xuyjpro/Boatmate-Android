@@ -66,9 +66,10 @@ public class SchoolHelpFragment extends BaseFragment {
             public void onItemClick(int position) {
                 SchoolHelp.DataBean d = (SchoolHelp.DataBean) mDataList.get(position);
                 Intent intent = new Intent(getContext(), SchoolHelpDetailActivity.class);
-                showToast("id:" + d.getId());
                 intent.putExtra("id", d.getId());
-                startActivity(intent);
+                intent.putExtra("position",position);
+
+                startActivityForResult(intent,1000);
             }
         });
         smartRefreshLayout.setOnRefreshLoadmoreListener(new OnRefreshLoadmoreListener() {
@@ -87,6 +88,9 @@ public class SchoolHelpFragment extends BaseFragment {
         smartRefreshLayout.autoRefresh();
     }
 
+    public void autoRefresh(){
+        smartRefreshLayout.autoRefresh();
+    }
     public void getNewData(final boolean isRefresh) {
         if (isRefresh) {
             mNextPage = 1;
@@ -127,6 +131,20 @@ public class SchoolHelpFragment extends BaseFragment {
                 mAdapter.notifyDataSetChanged();
 
 
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==1000){
+            if(data!=null){
+                int position=data.getIntExtra("position",0);
+                if(position!=0){
+                    mDataList.remove(position);
+                    mAdapter.notifyItemRemoved(position);
+                }
             }
         }
     }

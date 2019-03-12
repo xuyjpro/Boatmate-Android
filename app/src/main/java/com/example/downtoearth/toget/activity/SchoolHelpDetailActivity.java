@@ -1,5 +1,6 @@
 package com.example.downtoearth.toget.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.JsonReader;
@@ -17,6 +18,7 @@ import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.HttpParams;
+import com.mylhyl.circledialog.CircleDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,6 +37,7 @@ public class SchoolHelpDetailActivity extends BaseActivity implements View.OnCli
     private ImageView iv_head;
     private Button btn_post;
 
+    private int uid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +62,8 @@ public class SchoolHelpDetailActivity extends BaseActivity implements View.OnCli
         getDetail();
     }
     public void initListener(){
-        findViewById(R.id.layout_back);
+        findViewById(R.id.layout_back).setOnClickListener(this);
+        findViewById(R.id.v_delete).setOnClickListener(this);
     }
     public void getDetail(){
         final PromptDialog promptDialog=new PromptDialog(this);
@@ -163,6 +167,9 @@ public class SchoolHelpDetailActivity extends BaseActivity implements View.OnCli
             btn_post.setBackgroundResource(R.drawable.btn_post_unclick);
             btn_post.setTextColor(Color.RED);
         }
+
+
+        this.uid=dataBean.getUid();
     }
 
     public void modifyStatus(int status){
@@ -194,13 +201,64 @@ public class SchoolHelpDetailActivity extends BaseActivity implements View.OnCli
                     }
                 });
     }
+    public void postDelete(){
+        final PromptDialog promptDialog=new PromptDialog(this);
+        promptDialog.showLoading("删除中");
+        OkGo.post(HttpUtils.DELETE_SCHOOL_HELP)
+                .tag(this)
+                .isMultipart(true)
+                .params("token",ToolUtils.getString("token"))
+                .params("id",getIntent().getIntExtra("id",0))
+                .execute(new StringCallback() {
+                    @Override
+                    public void onSuccess(String s, Call call, Response response) {
+                        showToast(s);
+                        try {
+                            JSONObject jsonObject=new JSONObject(s);
+                            if(jsonObject.getInt("code")==200){
+                                promptDialog.showSuccess("删除成功");
+                                Intent intent=new Intent();
+                                intent.putExtra("position",getIntent().getIntExtra("position",0));
+                                setResult(RESULT_OK,intent);
+                                finish();
+                            }else{
+                                promptDialog.showError(jsonObject.getString("message"));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+    }
     @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.layout_back:
                 finish();
                 break;
+            case R.id.v_delete:
+                if(uid!=ToolUtils.getInt("uid")){
+                    showToast("非本人无权删除");
+                    return;
+                }
+                new CircleDialog.Builder()
+                        .setCanceledOnTouchOutside(false)
+                        .setCancelable(false)
 
+                        .setTitle("删除")
+                        .setText("是否确定删除该动态？")
+
+                        .setNegative("取消", null)
+                        .setPositive("确定", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        postDelete();
+                                    }
+                                }
+                        )
+                        .show(getSupportFragmentManager());
+                break;
 
         }
     }

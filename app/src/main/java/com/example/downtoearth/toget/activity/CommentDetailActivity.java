@@ -97,7 +97,15 @@ public class CommentDetailActivity extends BaseActivity implements View.OnClickL
                 customDialog.setOnItemClick(new onDialogItemClickListener() {
                     @Override
                     public void onDelete() {
-                        postDelete(position);
+                        Comment.DataBean dataBean= (Comment.DataBean) mDataList.get(position);
+
+                        if(uid==ToolUtils.getInt("uid")||dataBean.getUid()==ToolUtils.getInt("uid")){
+                            postDelete(position);
+
+                        }else{
+                            showToast("非本人无权删除");
+                        }
+
                     }
 
                     @Override
@@ -217,7 +225,7 @@ public class CommentDetailActivity extends BaseActivity implements View.OnClickL
         cb_like.setText(dataBean.getAwesome() + "");
         cb_like.setChecked(dataBean.isLike());
 
-        uid=dataBean.getUid();
+        this.uid=dataBean.getUid();
     }
 
     public void parseData(String s, boolean isRefresh) {
@@ -314,6 +322,10 @@ public class CommentDetailActivity extends BaseActivity implements View.OnClickL
                 finish();
                 break;
             case R.id.layout_delete:
+                if(uid!=ToolUtils.getInt("uid")){
+                    showToast("非本人无权删除");
+                    return;
+                }
                 new CircleDialog.Builder()
                         .setCanceledOnTouchOutside(false)
                         .setCancelable(false)

@@ -43,7 +43,8 @@ public class SchoolHelpActivity extends BaseActivity {
         mFloatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent=new Intent(SchoolHelpActivity.this,PublishSchoolHelpActivity.class);
+                startActivityForResult(intent,1000);
             }
         });
         radioGroup=findViewById(R.id.radio_group);
@@ -90,5 +91,19 @@ public class SchoolHelpActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case 1000:
+                if(resultCode==RESULT_OK){
+                    ( (SchoolHelpFragment)fragments.get(0)).autoRefresh();
+                    ( (SchoolHelpFragment)fragments.get(1)).autoRefresh();
+
+                }
+                break;
+        }
     }
 }

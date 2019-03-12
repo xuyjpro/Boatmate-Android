@@ -80,7 +80,7 @@ public class ToolUtils {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dipValue * scale + 0.5f);
     }
-    public static void loadImage(ImageView imageView,String url){
+    public static void loadImage(Context context,ImageView imageView,String url){
 
         Glide.with(context).load(HttpUtils.DOWNLOAD_URL+url).into(imageView);
     }

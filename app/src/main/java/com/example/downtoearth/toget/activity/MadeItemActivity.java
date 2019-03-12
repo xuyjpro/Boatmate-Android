@@ -76,4 +76,13 @@ public class MadeItemActivity extends BaseActivity implements View.OnClickListen
         context.startActivity(intent);
 
     }
+    public static void startAction(Context context, String title, String content,TextView tv_static) {
+        MadeItemActivity.tv_static=tv_static;
+        Intent intent = new Intent(context, MadeItemActivity.class);
+        intent.putExtra("title", title);
+        intent.putExtra("content", content);
+
+        context.startActivity(intent);
+
+    }
 }
