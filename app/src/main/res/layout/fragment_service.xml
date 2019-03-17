@@ -41,7 +41,7 @@
                 android:id="@+id/tv4"
                 style="@style/tvStyle"
                 android:drawableTop="@mipmap/school_help"
-                android:text="校园兼职" />
+                android:text="校园跳蚤" />
         </LinearLayout>
 
         <View

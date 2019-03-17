@@ -16,6 +16,7 @@ import com.example.downtoearth.toget.utils.ToolUtils;
 
 import java.util.List;
 
+
 public class StuffLossAdapter extends RecyclerView.Adapter<StuffLossAdapter.ViewHolder> {
     private Context context;
     private onItemClickListener listener;
@@ -23,6 +24,7 @@ public class StuffLossAdapter extends RecyclerView.Adapter<StuffLossAdapter.View
     public interface  onItemClickListener{
         public void onItemClick(int position);
         public void onMoreClick(int position);
+        void onPictureClick(int position,int index);
     }
     public StuffLossAdapter(List list){
         this.list=list;
@@ -74,6 +76,28 @@ public class StuffLossAdapter extends RecyclerView.Adapter<StuffLossAdapter.View
                 }
             }
         });
+        holder.picture1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(listener!=null){
+                    int positon=holder.getAdapterPosition();
+
+                    listener.onPictureClick(positon,0);
+
+                }
+            }
+        });
+        holder.picture2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(listener!=null){
+                    int positon=holder.getAdapterPosition();
+
+                    listener.onPictureClick(positon,1);
+
+                }
+            }
+        });
         return holder;
     }
 
@@ -85,18 +109,20 @@ public class StuffLossAdapter extends RecyclerView.Adapter<StuffLossAdapter.View
         holder.tv_content.setText(stuff.getStuff().getContent());
         holder.tv_time.setText(ToolUtils.getDate(stuff.getStuff().getTime(),"yyyy-MM-dd HH:mm:ss"));
         if(stuff.getStuff().getPicture1()!=null){
-            Glide.with(context).load(HttpUtils.DOWNLOAD_URL+stuff.getStuff().getPicture1()).into(holder.picture1);
             holder.layout_picture.setVisibility(View.VISIBLE);
+
+            Glide.with(context).load(HttpUtils.DOWNLOAD_URL+stuff.getStuff().getPicture1()).into(holder.picture1);
             if(stuff.getStuff().getPicture2()!=null){
+                holder.picture2.setVisibility(View.VISIBLE);
+
                 Glide.with(context).load(HttpUtils.DOWNLOAD_URL+stuff.getStuff().getPicture2()).into(holder.picture2);
 
             }else{
-               // holder.picture2.setVisibility(View.GONE);
+                holder.picture2.setVisibility(View.GONE);
             }
         }else{
             holder.layout_picture.setVisibility(View.GONE);
 
-            //   holder.picture1.setVisibility(View.GONE);
         }
 
     }

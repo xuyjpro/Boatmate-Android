@@ -103,7 +103,7 @@ public class PublishCommentActivity extends BaseActivity {
                         Log.e("result", s);
                         try {
                             JSONObject jsonObject = new JSONObject(s);
-                            if (jsonObject.getString("message").equals("success")) {
+                            if (jsonObject.getInt("code")==200) {
                                 promptDialog.showSuccess("发布成功");
                                 Intent data = new Intent();
                                 data.putExtra("position", getIntent().getIntExtra("position", 0));

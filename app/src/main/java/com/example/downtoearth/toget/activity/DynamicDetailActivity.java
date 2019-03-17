@@ -36,6 +36,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.leefeng.promptlibrary.PromptButton;
+import me.leefeng.promptlibrary.PromptButtonListener;
+import me.leefeng.promptlibrary.PromptDialog;
 import okhttp3.Call;
 import okhttp3.Response;
 
@@ -54,6 +57,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
     private ViewGroup layout_comment;
     private TextView tv_no_comment;
     private CommentAdapter mAdapter;
+    private  PromptDialog promptDialog;
     private List mDataList;
     private int mNextPage=1;
     private int uid;
@@ -82,6 +86,8 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
         cb_like=findViewById(R.id.cb_like);
         layout_comment=findViewById(R.id.layout_comment);
         tv_no_comment=findViewById(R.id.tv_no_comment);
+
+        promptDialog=new PromptDialog(this);
 
         Drawable[] drawables=cb_like.getCompoundDrawables();
         drawables[0].setBounds(0,0,ToolUtils.dip2px(24),ToolUtils.dip2px(24));
@@ -122,10 +128,25 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
                 customDialog.setOnItemClick(new onDialogItemClickListener() {
                     @Override
                     public void onDelete() {
+
                         Comment.DataBean dataBean= (Comment.DataBean) mDataList.get(position);
 
                         if(uid==ToolUtils.getInt("uid")||dataBean.getUid()==ToolUtils.getInt("uid")){
-                            postDelete(position);
+
+                            PromptButton confirm = new PromptButton("确定", new PromptButtonListener() {
+                                @Override
+                                public void onClick(PromptButton button) {
+                                    postDelete(position);
+
+                                }
+                            });
+
+                            promptDialog.showWarnAlert("确认是否删除", new PromptButton("取消", new PromptButtonListener() {
+                                @Override
+                                public void onClick(PromptButton button) {
+                                    promptDialog.dismiss();
+                                }
+                            }), confirm);
 
                         }else{
                             showToast("非本人无权删除");
@@ -168,8 +189,14 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
                 startActivityForResult(intent,1002);
             }
         });
+        PromptDialog promptDialog=new PromptDialog(this);
+        promptDialog.showLoading("加载中");
         getDetail();
         getCommentList(true);
+
+        promptDialog.showSuccessDelay("加载成功",500);
+
+
     }
 
     public void initClickEvent(){
@@ -187,6 +214,13 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
                 .params("id",getIntent().getIntExtra("id",0))
                 .execute(new StringCallback() {
                     @Override
+                    public void onError(Call call, Response response, Exception e) {
+                        super.onError(call, response, e);
+                        showToast("服务器异常，请联系客服：15252478436");
+                        finish();
+                    }
+
+                    @Override
                     public void onSuccess(String s, Call call, Response response) {
                         Log.e(TAG,s);
                         try {
@@ -203,6 +237,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
                 });
     }
     public void getCommentList(final boolean isRefresh){
+
         OkGo.post(HttpUtils.GET_COMMENTS)
                 .tag(this)
                 .isMultipart(true)
@@ -210,6 +245,15 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
                 .params("currentPage",mNextPage)
                 .params("parent_id",getIntent().getIntExtra("id",0))
                 .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Response response, Exception e) {
+                        super.onError(call, response, e);
+                        showToast("服务器异常，请联系客服：15252478436");
+
+                        Intent intent=new Intent(DynamicDetailActivity.this,LoginActivity.class);
+                        startActivity(intent);
+                    }
+
                     @Override
                     public void onSuccess(String s, Call call, Response response) {
                         Log.e(TAG,s);
@@ -342,22 +386,21 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
                     showToast("非本人动态无法删除");
                     return;
                 }
-                new CircleDialog.Builder()
-                        .setCanceledOnTouchOutside(false)
-                        .setCancelable(false)
+                PromptButton confirm = new PromptButton("确定", new PromptButtonListener() {
+                    @Override
+                    public void onClick(PromptButton button) {
+                        postDelete();
 
-                        .setTitle("删除")
-                        .setText("是否确定删除该动态？")
+                    }
+                });
 
-                        .setNegative("取消", null)
-                        .setPositive("确定", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        postDelete();
-                                    }
-                                }
-                        )
-                        .show(getSupportFragmentManager());
+                promptDialog.showWarnAlert("确认是否删除", new PromptButton("取消", new PromptButtonListener() {
+                    @Override
+                    public void onClick(PromptButton button) {
+                        promptDialog.dismiss();
+                    }
+                }), confirm);
+
                 break;
             case R.id.layout_back:
                 Intent intent=new Intent();
@@ -485,7 +528,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
 
         }else if(requestCode==1002){//评论详情
             if(data!=null){
-                int position=data.getIntExtra("postion",0);
+                int position=data.getIntExtra("position",0);
                 if (resultCode == 2000) {   //修改
                     Comment.DataBean dataBean= (Comment.DataBean) mDataList.get(position);
                     dataBean.setAwesome(data.getIntExtra("awesome",0));

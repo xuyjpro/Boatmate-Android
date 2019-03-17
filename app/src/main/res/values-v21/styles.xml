@@ -3,4 +3,12 @@
     <style name="FruitActivityTheme" parent="AppTheme">
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
+    <style name="ImageBrowseTransitionTheme" parent="AppTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/changebounds</item>
+        <item name="android:windowSharedElementReturnTransition">@transition/changebounds</item>
+    </style>
 </resources>

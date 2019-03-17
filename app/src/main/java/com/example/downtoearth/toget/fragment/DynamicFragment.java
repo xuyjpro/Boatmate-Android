@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.downtoearth.toget.R;
+import com.example.downtoearth.toget.activity.ChatActivity;
 import com.example.downtoearth.toget.activity.DynamicDetailActivity;
 import com.example.downtoearth.toget.activity.PublishCommentActivity;
 import com.example.downtoearth.toget.adapter.DynamicAdapter;
@@ -31,6 +32,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.model.Conversation;
 import okhttp3.Call;
 import okhttp3.Response;
 
@@ -104,6 +107,19 @@ public class DynamicFragment extends BaseFragment {
 
                 PublishCommentActivity.startActivityForComment(getActivity(),dataBean.getId(),dataBean.getNickname(),1000);
             }
+
+            @Override
+            public void onHeadClick(int position) {
+                if(position==0){
+                    Conversation.createSingleConversation("15259900001");
+
+                }else if(position==1){
+                    Conversation.createSingleConversation("15259900002");
+                    Intent intent=new Intent(getContext(),ChatActivity.class);
+                    intent.putExtra("username","15259900002");
+                    startActivity(intent);
+                }
+            }
         });
 
         smartRefreshLayout.autoRefresh();
@@ -126,6 +142,11 @@ public class DynamicFragment extends BaseFragment {
                 .params("currentPage", mNextPage)
                 .params("category", getArguments().getInt("category"))
                 .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Response response, Exception e) {
+                        super.onError(call, response, e);
+                        ToolUtils.doHttpError(getContext());
+                    }
                     @Override
                     public void onSuccess(String s, Call call, Response response) {
                         Log.e("result", s);

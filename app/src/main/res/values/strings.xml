@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">ToGet</string>
     <string name="title_activity_full_info">FullInfoActivity</string>
+    <string name="jmui_cancel_record_voice_hint">松开手指，取消发送</string>
+    <string name="jmui_cancel">取消</string>
+    <string name="jmui_loading">正在加载</string>
+    <string name="jmui_sdcard_not_exist_toast">暂无外部存储</string>
+    <string name="btn_text_speak">按住录音</string>
+    <string name="btn_send">发送</string>
+    <string name="all_images">全部图片</string>
+
 </resources>

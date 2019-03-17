@@ -3,9 +3,6 @@ package com.example.downtoearth.toget.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -15,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.downtoearth.toget.MainActivity;
 import com.example.downtoearth.toget.R;
 import com.example.downtoearth.toget.utils.HttpUtils;
 import com.example.downtoearth.toget.utils.ToolUtils;
@@ -31,13 +27,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.callback.DownloadAvatarCallback;
+import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback;
+import cn.jpush.im.android.api.model.UserInfo;
+import cn.jpush.im.api.BasicCallback;
 import cn.qqtheme.framework.picker.DatePicker;
-import cn.qqtheme.framework.picker.DateTimePicker;
 import cn.qqtheme.framework.picker.OptionPicker;
-import cn.qqtheme.framework.picker.SinglePicker;
 import cn.qqtheme.framework.util.ConvertUtils;
 import cn.qqtheme.framework.widget.WheelView;
 import me.leefeng.promptlibrary.PromptDialog;
@@ -235,7 +234,18 @@ public class FullInfoActivity extends BaseActivity implements View.OnClickListen
                             JSONObject jsonObject=new JSONObject(s);
                             if(jsonObject.getInt("code")==200){
                                 promptDialog.showSuccess("提交成功");
+
+                                JMessageClient.updateUserAvatar(new File(headPicPath), new BasicCallback() {
+                                    @Override
+                                    public void gotResult(int i, String s) {
+                                        log(s);
+                                    }
+                                });
+
                                 ToolUtils.putString("token",getIntent().getStringExtra("token"));
+
+
+
 
                                 Intent intent=new Intent(FullInfoActivity.this,MainActivity.class);
                                 intent.putExtra("user_info",jsonObject.getString("data"));

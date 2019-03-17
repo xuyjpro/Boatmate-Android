@@ -11,12 +11,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.downtoearth.toget.R;
+import com.example.downtoearth.toget.activity.CollegeMarketActivity;
+import com.example.downtoearth.toget.activity.LoginActivity;
 import com.example.downtoearth.toget.activity.SchoolHelpActivity;
 import com.example.downtoearth.toget.activity.SchoolHelpDetailActivity;
 import com.example.downtoearth.toget.activity.StuffLossActivity;
 import com.example.downtoearth.toget.adapter.SchoolHelpAdapter;
 import com.example.downtoearth.toget.bean.SchoolHelp;
 import com.example.downtoearth.toget.impl.OnItemClickListener;
+import com.example.downtoearth.toget.utils.ActivityCollector;
 import com.example.downtoearth.toget.utils.GlideImageLoader;
 import com.example.downtoearth.toget.utils.HttpUtils;
 import com.example.downtoearth.toget.utils.ToolUtils;
@@ -69,11 +72,7 @@ public class ServiceFragment extends BaseFragment implements View.OnClickListene
         }
 
 
-//        LinearLayout.LayoutParams rvParams= (LinearLayout.LayoutParams) rv_helps.getLayoutParams();
-//        rvParams.leftMargin=ToolUtils.dip2px(10);
-//        rvParams.rightMargin=ToolUtils.dip2px(10);
-//        rvParams.topMargin=ToolUtils.dip2px(10);
-//        rv_helps.setLayoutParams(rvParams);
+
         return view;
 
     }
@@ -120,6 +119,13 @@ public class ServiceFragment extends BaseFragment implements View.OnClickListene
                 .params("currentPage",1)
                 .params("pageSize",6)
                 .execute(new StringCallback() {
+
+                    @Override
+                    public void onError(Call call, Response response, Exception e) {
+                        super.onError(call, response, e);
+                      ToolUtils.doHttpError(getContext());
+
+                    }
                     @Override
                     public void onSuccess(String s, Call call, Response response) {
                         parseHelpList(s);
@@ -180,7 +186,18 @@ public class ServiceFragment extends BaseFragment implements View.OnClickListene
                 break;
             case R.id.tv2:
                 Intent intent1=new Intent(getContext(),StuffLossActivity.class);
+                intent1.putExtra("category",0);
                 startActivity(intent1);
+                break;
+            case R.id.tv3:
+                Intent intent3=new Intent(getContext(),StuffLossActivity.class);
+                intent3.putExtra("category",1);
+
+                startActivity(intent3);
+                break;
+            case R.id.tv4:
+                Intent intent2=new Intent(getContext(),CollegeMarketActivity.class);
+                startActivity(intent2);
                 break;
             default:
                 showToast("暂未开发");

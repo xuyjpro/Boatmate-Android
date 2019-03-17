@@ -9,11 +9,8 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.RelativeLayout;
 
-import com.example.downtoearth.toget.MainActivity;
 import com.example.downtoearth.toget.R;
 import com.example.downtoearth.toget.utils.ToolUtils;
-
-import okhttp3.HttpUrl;
 
 
 /**

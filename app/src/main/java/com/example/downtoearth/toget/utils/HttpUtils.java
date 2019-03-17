@@ -6,8 +6,18 @@ package com.example.downtoearth.toget.utils;
 
 public class HttpUtils {
 
+
  //   public static final String IP="23.95.216.81";
     public static final String IP = "47.111.163.217:8080";
+
+    /*
+    * 版本控制*/
+
+
+    public static final String GET_APP_VERSION="http://"+IP+"/boatmate/"+"getAppVersion";
+
+
+
     public static final String REGISTER = "http://" + IP + "/boatmate/" + "register";
     public static final String LOGIN = "http://" + IP + "/boatmate/" + "login";
     public static final String EDIT_INFO = "http://" + IP + "/boatmate/" + "editUserInfo";

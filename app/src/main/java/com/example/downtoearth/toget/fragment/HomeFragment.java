@@ -2,22 +2,17 @@ package com.example.downtoearth.toget.fragment;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.example.downtoearth.toget.MainActivity;
 import com.example.downtoearth.toget.R;
 import com.example.downtoearth.toget.activity.PublishDynamicActivity;
 import com.example.downtoearth.toget.adapter.ViewPagerAdapter;
 import com.example.downtoearth.toget.utils.ToolUtils;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnRefreshLoadmoreListener;
 
 import java.util.ArrayList;
 import java.util.List;

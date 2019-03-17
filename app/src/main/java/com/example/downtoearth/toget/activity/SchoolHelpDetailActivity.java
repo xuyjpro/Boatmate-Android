@@ -203,6 +203,7 @@ public class SchoolHelpDetailActivity extends BaseActivity implements View.OnCli
     }
     public void postDelete(){
         final PromptDialog promptDialog=new PromptDialog(this);
+
         promptDialog.showLoading("删除中");
         OkGo.post(HttpUtils.DELETE_SCHOOL_HELP)
                 .tag(this)

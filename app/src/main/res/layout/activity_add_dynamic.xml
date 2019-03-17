@@ -34,14 +34,7 @@
                     android:src="@mipmap/back_dark" />
             </RelativeLayout>
 
-            <TextView
-                android:id="@+id/tv_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_toRightOf="@id/layout_back"
-                android:textColor="@color/textGray"
-                android:textSize="18sp" />
+
 
             <RelativeLayout
                 android:id="@+id/layout_set"
@@ -98,7 +91,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -109,8 +102,9 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="12dp"
-                        android:text="类型："
+                        android:text="类型"
                         android:textColor="@color/black"
+                        android:textStyle="bold"
                         android:textSize="16sp" />
 
                     <TextView
@@ -133,7 +127,87 @@
                         android:layout_marginRight="12dp"
                         android:background="@mipmap/back2_right" />
                 </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/layout_title"
+                    android:layout_width="match_parent"
+                    android:visibility="gone"
+                    android:layout_height="48dp">
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_alignParentTop="true"
 
+                        android:background="#eaeaea" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="12dp"
+                        android:text="标题"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tv_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="32dp"
+                        android:gravity="right"
+                        android:textColor="@color/textBlack"
+                        android:textSize="16sp" />
+
+                    <View
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="12dp"
+                        android:background="@mipmap/back2_right" />
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/layout_price"
+                    android:layout_width="match_parent"
+                    android:visibility="gone"
+                    android:layout_height="48dp">
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_alignParentTop="true"
+
+                        android:background="#eaeaea" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="12dp"
+                        android:text="价格（元)"
+                        android:textStyle="bold"
+
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tv_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="32dp"
+                        android:gravity="right"
+                        android:textColor="@color/textBlack"
+                        android:textSize="16sp" />
+
+                    <View
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="12dp"
+                        android:background="@mipmap/back2_right" />
+                </RelativeLayout>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="6dp"
@@ -151,7 +225,7 @@
                 android:background="@null"
                 android:gravity="left"
                 android:hint="添加动态..."
-                android:padding="10dp"
+                android:padding="5dp"
                 android:textColor="#000"
                 android:textColorHint="@color/normalGray"
                 android:textSize="18sp" />

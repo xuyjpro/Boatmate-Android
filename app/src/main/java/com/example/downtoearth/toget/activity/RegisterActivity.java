@@ -1,19 +1,15 @@
 package com.example.downtoearth.toget.activity;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 
-import com.example.downtoearth.toget.MainActivity;
 import com.example.downtoearth.toget.R;
 import com.example.downtoearth.toget.bean.UserInfo;
 import com.example.downtoearth.toget.utils.HttpUtils;
@@ -26,6 +22,9 @@ import com.lzy.okgo.callback.StringCallback;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.options.RegisterOptionalUserInfo;
+import cn.jpush.im.api.BasicCallback;
 import me.leefeng.promptlibrary.PromptDialog;
 import okhttp3.Call;
 import okhttp3.Response;
@@ -113,7 +112,10 @@ public class RegisterActivity extends BaseActivity {
                             if (jsonObject.getInt("code") == 200) {
 
                                 promptDialog.showSuccess("注册成功");
+
                                 parseData(s);
+
+
 
                             } else {
                                 promptDialog.showError(jsonObject.getString("message"));
@@ -136,6 +138,16 @@ public class RegisterActivity extends BaseActivity {
 
         UserInfo.DataBean.UserInfoBean uib = userInfo.getData().getUserInfo();
 
+
+
+
+
+        JMessageClient.register(uib.getPhone(), uib.getPassword(),  new BasicCallback() {
+            @Override
+            public void gotResult(int i, String s) {
+                showToast(s);
+            }
+        });
 
         Intent intent = new Intent(this, FullInfoActivity
                 .class);

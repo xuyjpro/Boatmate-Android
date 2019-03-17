@@ -33,6 +33,7 @@ public class StuffLossActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_home);
         initView();
         initData();
+
     }
     public void initView(){
         viewPager=findViewById(R.id.view_pager);
@@ -57,9 +58,15 @@ public class StuffLossActivity extends AppCompatActivity {
                     ToolUtils.dip2px(4));
             rb.setCompoundDrawables(null, null, null, drawable);
             if(i==0){
-                rb.setText("寻物启事");
+                if(getIntent().getIntExtra("category",0)==0){
+                    rb.setText("寻物启事");
+
+                }else{
+                    rb.setText("失物招领");
+
+                }
             }else{
-                rb.setText("失物招领");
+                rb.setText("我发布的");
 
             }
         }
@@ -67,8 +74,8 @@ public class StuffLossActivity extends AppCompatActivity {
     public void initData() {
         fragments=new ArrayList<>();
 
-        fragments.add(StuffLossFragment.newInstance(0));
-        fragments.add(StuffLossFragment.newInstance(1));
+        fragments.add(StuffLossFragment.newInstance(getIntent().getIntExtra("category",0),false));
+        fragments.add(StuffLossFragment.newInstance(getIntent().getIntExtra("category",0),true));
 
 
         viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(),fragments));

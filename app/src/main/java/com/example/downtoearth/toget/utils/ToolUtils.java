@@ -1,13 +1,18 @@
 package com.example.downtoearth.toget.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
 import com.example.downtoearth.toget.R;
+import com.example.downtoearth.toget.activity.LoginActivity;
 
 import java.text.SimpleDateFormat;
 
@@ -83,5 +88,32 @@ public class ToolUtils {
     public static void loadImage(Context context,ImageView imageView,String url){
 
         Glide.with(context).load(HttpUtils.DOWNLOAD_URL+url).into(imageView);
+    }
+
+    public  static  void downloadByWeb(Context context, String apkPath) {
+        Uri uri = Uri.parse(apkPath);
+        //String android.intent.action.VIEW 比较通用，会根据用户的数据类型打开相应的Activity。如:浏览器,电话,播放器,地图
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+    public static int getVersionCode(Context mContext) {
+        int versionCode = 0;
+        try {
+            //获取软件版本号，对应AndroidManifest.xml下android:versionCode
+            versionCode = mContext.getPackageManager().
+                    getPackageInfo(mContext.getPackageName(), 0).versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionCode;
+    }
+    public static void doHttpError(Context context){
+        Toast.makeText(context,"服务器异常，请联系客服：15252478436",Toast.LENGTH_SHORT).show();
+        Intent intent=new Intent(context,LoginActivity.class);
+        context.startActivity(intent);
+    }
+    public static String getAppKey(){
+        return "48147ad8cbf1e43998ba7fd9";
     }
 }

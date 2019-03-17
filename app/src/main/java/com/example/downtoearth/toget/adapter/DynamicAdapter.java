@@ -44,6 +44,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<DynamicAdapter.ViewHold
         void onLikeClick(int position);
         void onItemClick(int position);
         void onCommentClick(int position);
+        void onHeadClick(int position);
     }
     static class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView iv_head;
@@ -113,6 +114,15 @@ public class DynamicAdapter extends RecyclerView.Adapter<DynamicAdapter.ViewHold
                 int position=holder.getAdapterPosition();
                 if(mListener!=null){
                     mListener.onItemClick(position);
+                }
+            }
+        });
+        holder.iv_head.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position=holder.getAdapterPosition();
+                if(mListener!=null){
+                    mListener.onHeadClick(position);
                 }
             }
         });

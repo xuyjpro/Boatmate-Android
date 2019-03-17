@@ -1,6 +1,5 @@
 package com.example.downtoearth.toget.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,18 +11,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.downtoearth.toget.MainActivity;
 import com.example.downtoearth.toget.R;
 import com.example.downtoearth.toget.bean.UserInfo;
+import com.example.downtoearth.toget.utils.ActivityCollector;
 import com.example.downtoearth.toget.utils.HttpUtils;
 import com.example.downtoearth.toget.utils.ToolUtils;
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.api.BasicCallback;
 import me.leefeng.promptlibrary.PromptDialog;
 import okhttp3.Call;
 import okhttp3.Response;
@@ -44,6 +44,9 @@ public class LoginActivity extends BaseActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_login);
+
+
+
         TextView tv_register = findViewById(R.id.tv_register);
         tv_register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,9 +68,15 @@ public class LoginActivity extends BaseActivity {
             }
         });
 
-        et_account.setText("15252478436");
+        et_account.setText("15259900001");
         et_password.setText("123456");
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        ActivityCollector.finishOther(this);
     }
 
     public void postLogin() {
@@ -125,10 +134,17 @@ public class LoginActivity extends BaseActivity {
 
     public void parseData(String s){
 
+        showToast(s);
         UserInfo userInfo=new Gson().fromJson(s,UserInfo.class);
 
-
         UserInfo.DataBean.UserInfoBean uib=userInfo.getData().getUserInfo();
+
+        JMessageClient.login(uib.getPhone(), uib.getPassword(), new BasicCallback() {
+            @Override
+            public void gotResult(int i, String s) {
+                showToast(s);
+            }
+        });
 
         //资料不完整
         if(uib.getNickname()==null||uib.getNickname().isEmpty()||uib.getHeadPic()==null||uib.getHeadPic().isEmpty()){

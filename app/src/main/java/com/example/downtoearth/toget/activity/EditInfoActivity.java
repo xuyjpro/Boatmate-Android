@@ -2,7 +2,6 @@ package com.example.downtoearth.toget.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -13,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.downtoearth.toget.MainActivity;
 import com.example.downtoearth.toget.R;
 import com.example.downtoearth.toget.bean.UserInfo;
 import com.example.downtoearth.toget.utils.HttpUtils;
@@ -33,6 +31,8 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.List;
 
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.api.BasicCallback;
 import cn.qqtheme.framework.picker.DatePicker;
 import cn.qqtheme.framework.picker.OptionPicker;
 import cn.qqtheme.framework.util.ConvertUtils;
@@ -280,6 +280,12 @@ public class EditInfoActivity extends BaseActivity implements View.OnClickListen
                             JSONObject jsonObject=new JSONObject(s);
                             if(jsonObject.getInt("code")==200){
                                 promptDialog.showSuccess("提交成功");
+                                JMessageClient.updateUserAvatar(new File(headPicPath), new BasicCallback() {
+                                    @Override
+                                    public void gotResult(int i, String s) {
+                                        log(s);
+                                    }
+                                });
 
                                 Intent intent=new Intent(EditInfoActivity.this,MainActivity.class);
                                 intent.putExtra("user_info",jsonObject.getString("data"));
