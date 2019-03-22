@@ -11,14 +11,12 @@ import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.model.Message;
 
 public class MyApplication extends Application {
-    public static List<Message> forwardMsg = new ArrayList<>();
-    public static String PICTURE_DIR = "sdcard/ToGet/pictures/";
-    public static String FILE_DIR = "sdcard/ToGet/recvFiles/";
+
 
     @Override
     public void onCreate() {
         super.onCreate();
-        JMessageClient.init( this,true);
+        JMessageClient.init( getApplicationContext(),true);
         JMessageClient.setNotificationFlag(JMessageClient.FLAG_NOTIFY_DEFAULT);
 
     }

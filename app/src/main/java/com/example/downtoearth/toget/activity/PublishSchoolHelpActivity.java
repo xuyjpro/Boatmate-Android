@@ -59,7 +59,7 @@ public class PublishSchoolHelpActivity extends BaseActivity implements View.OnCl
         OkGo.post(HttpUtils.PUBLISH_SCHOOL_HELP)
                 .tag(this)
                 .isMultipart(true)
-                .params("token",ToolUtils.getString("token"))
+                .params("token",ToolUtils.getString(this,"token"))
                 .params("title",tv_title.getText().toString())
                 .params("content",et_content.getText().toString())
                 .execute(new StringCallback() {

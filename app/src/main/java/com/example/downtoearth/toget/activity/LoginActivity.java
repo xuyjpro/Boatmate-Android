@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -45,8 +46,6 @@ public class LoginActivity extends BaseActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_login);
 
-
-
         TextView tv_register = findViewById(R.id.tv_register);
         tv_register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,8 +67,17 @@ public class LoginActivity extends BaseActivity {
             }
         });
 
-        et_account.setText("15259900001");
-        et_password.setText("123456");
+        String username=ToolUtils.getString(this,"username");
+        String password=ToolUtils.getString(this,"password");
+        if(TextUtils.isEmpty(username)||TextUtils.isEmpty(password)) {
+            et_account.setText("15259900001");
+            et_password.setText("123456");
+        }else{
+            et_account.setText(username);
+            et_password.setText(password);
+        }
+
+
 
     }
 
@@ -97,6 +105,7 @@ public class LoginActivity extends BaseActivity {
         promptDialog.showLoading("登录中...");
         OkGo.post(HttpUtils.LOGIN)
                 .tag(this)
+                .isMultipart(true)
                 .params("phone", account)
                 .params("password", password)
                 .execute(new StringCallback() {
@@ -134,10 +143,12 @@ public class LoginActivity extends BaseActivity {
 
     public void parseData(String s){
 
-        showToast(s);
         UserInfo userInfo=new Gson().fromJson(s,UserInfo.class);
 
         UserInfo.DataBean.UserInfoBean uib=userInfo.getData().getUserInfo();
+
+        ToolUtils.putString(this,"username",uib.getPhone());
+        ToolUtils.putString(this,"password",uib.getPassword());
 
         JMessageClient.login(uib.getPhone(), uib.getPassword(), new BasicCallback() {
             @Override
@@ -152,12 +163,12 @@ public class LoginActivity extends BaseActivity {
                     .class);
             intent.putExtra("token",userInfo.getData().getToken());
 
-            ToolUtils.putInt("uid",userInfo.getData().getUserInfo().getId());
+            ToolUtils.putInt(this,"uid",userInfo.getData().getUserInfo().getId());
 
             startActivity(intent);
         }else{
-            ToolUtils.putString("token",userInfo.getData().getToken());
-            ToolUtils.putInt("uid",userInfo.getData().getUserInfo().getId());
+            ToolUtils.putString(this,"token",userInfo.getData().getToken());
+            ToolUtils.putInt(this,"uid",userInfo.getData().getUserInfo().getId());
             Intent intent = new Intent(this, MainActivity
                     .class);
 

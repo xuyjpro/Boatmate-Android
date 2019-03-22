@@ -52,11 +52,13 @@ public class PublishStuffActivity extends BaseActivity implements View.OnClickLi
     private ViewGroup layout_title;
     private ViewGroup layout_price;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_dynamic);
         initView();
+        initData();
         initEvent();
     }
 
@@ -74,13 +76,33 @@ public class PublishStuffActivity extends BaseActivity implements View.OnClickLi
         promptDialog=new PromptDialog(this);
     }
 
+    public void initData(){
+        category=getIntent().getIntExtra("category",0);
+        switch (category){
+            case 0:
+                tv_stuff.setText("寻物启事");
+                layout_title.setVisibility(View.GONE);
+                layout_price.setVisibility(View.GONE);
+                break;
+            case 1:
+                tv_stuff.setText("失物招领");
+                layout_title.setVisibility(View.GONE);
+                layout_price.setVisibility(View.GONE);
+                break;
+            case 2:
+                tv_stuff.setText("校园跳蚤");
+                layout_title.setVisibility(View.VISIBLE);
+                layout_price.setVisibility(View.VISIBLE);
+                break;
+        }
+    }
 
     public void initEvent() {
         findViewById(R.id.layout_stuff).setVisibility(View.VISIBLE);
 
         findViewById(R.id.layout_set).setOnClickListener(this);
         findViewById(R.id.layout_photo).setOnClickListener(this);
-        findViewById(R.id.layout_stuff).setOnClickListener(this);
+       // findViewById(R.id.layout_stuff).setOnClickListener(this);
         layout_title.setOnClickListener(this);
         layout_price.setOnClickListener(this);
 
@@ -90,7 +112,7 @@ public class PublishStuffActivity extends BaseActivity implements View.OnClickLi
     public void onClick(View view) {
 
         switch (view.getId()){
-            case R.id.layout_stuff:
+          /*  case R.id.layout_stuff:
                 final List<String> stuffs=new ArrayList<>();
                 stuffs.add("寻物启事");
                 stuffs.add("失物招领");
@@ -133,7 +155,7 @@ public class PublishStuffActivity extends BaseActivity implements View.OnClickLi
                         }));
 
 
-                break;
+                break;*/
             case R.id.layout_photo:
                 PictureSelector.create(this)
                         .openGallery(PictureMimeType.ofImage())
@@ -183,18 +205,25 @@ public class PublishStuffActivity extends BaseActivity implements View.OnClickLi
             return;
         }
         if(category==2){
-            if(!TextUtils.isEmpty(tv_title.getText())) {
+            if(TextUtils.isEmpty(tv_title.getText())) {
                 showToast("校园跳蚤标题不能为空");
                 return;
             }else{
                 httpParams.put("title",tv_title.getText().toString());
 
             }
-            if(!TextUtils.isEmpty(tv_price.getText())) {
+            if(TextUtils.isEmpty(tv_price.getText())) {
                 showToast("校园跳蚤价格不能为空");
                 return;
             }else{
-                httpParams.put("price",tv_price.getText().toString());
+                try{
+                    float price=Float.parseFloat(tv_price.getText().toString());
+                    httpParams.put("price",price);
+
+                }catch (Exception e){
+                    showToast("价格内容非法字符");
+                    return;
+                }
             }
 
         }
@@ -206,10 +235,9 @@ public class PublishStuffActivity extends BaseActivity implements View.OnClickLi
             return;
         }
 
-        final PromptDialog promptDialog=new PromptDialog(this);
 
         promptDialog.showLoading("发布中");
-        httpParams.put("token",ToolUtils.getString("token"));
+        httpParams.put("token",ToolUtils.getString(this,"token"));
         httpParams.put("category",category);
         OkGo.post(HttpUtils.PUBLISH_STUFF)
                 .tag(this)
@@ -217,7 +245,7 @@ public class PublishStuffActivity extends BaseActivity implements View.OnClickLi
                 .params(httpParams)
                 .execute(new StringCallback() {
                     @Override
-                    public void onSuccess(String s, Call call, Response response) {
+                    public void onSuccess(final String s, Call call, Response response) {
                         try {
                             JSONObject jsonObject=new JSONObject(s);
                             if(jsonObject.getInt("code")==200){
@@ -230,6 +258,7 @@ public class PublishStuffActivity extends BaseActivity implements View.OnClickLi
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+
 
                     }
                 });

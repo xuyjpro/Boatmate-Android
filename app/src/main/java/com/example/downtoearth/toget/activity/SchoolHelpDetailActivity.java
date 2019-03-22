@@ -3,7 +3,6 @@ package com.example.downtoearth.toget.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.JsonReader;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -17,12 +16,12 @@ import com.example.downtoearth.toget.utils.ToolUtils;
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.model.HttpParams;
-import com.mylhyl.circledialog.CircleDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import me.leefeng.promptlibrary.PromptButton;
+import me.leefeng.promptlibrary.PromptButtonListener;
 import me.leefeng.promptlibrary.PromptDialog;
 import okhttp3.Call;
 import okhttp3.Response;
@@ -36,7 +35,7 @@ public class SchoolHelpDetailActivity extends BaseActivity implements View.OnCli
     private TextView tv_heart_word;
     private ImageView iv_head;
     private Button btn_post;
-
+private PromptDialog promptDialog;
     private int uid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +54,7 @@ public class SchoolHelpDetailActivity extends BaseActivity implements View.OnCli
         tv_heart_word=findViewById(R.id.tv_heart_word);
         iv_head=findViewById(R.id.iv_head);
         btn_post=findViewById(R.id.btn_post);
-
+        promptDialog=new PromptDialog(this);
     }
     public void initData(){
         initListener();
@@ -112,7 +111,7 @@ public class SchoolHelpDetailActivity extends BaseActivity implements View.OnCli
             btn_post.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(dataBean.getUid()==ToolUtils.getInt("uid")){
+                    if(dataBean.getUid()==ToolUtils.getInt(SchoolHelpDetailActivity.this,"uid")){
                         showToast("您不能提交自己的帮帮");
                     }else{
                         modifyStatus(1);
@@ -124,11 +123,11 @@ public class SchoolHelpDetailActivity extends BaseActivity implements View.OnCli
         }else if(dataBean.getStatus()==1){
             btn_post.setClickable(false);
 
-            if(dataBean.getPostUid()==ToolUtils.getInt("uid")){
+            if(dataBean.getPostUid()==ToolUtils.getInt(SchoolHelpDetailActivity.this,"uid")){
                 btn_post.setBackgroundResource(R.drawable.btn_post_add_corner);
 
                 btn_post.setText("等待发布者确认你的帮助...");
-            }else if(dataBean.getUid()==ToolUtils.getInt("uid")){
+            }else if(dataBean.getUid()==ToolUtils.getInt(SchoolHelpDetailActivity.this,"uid")){
                 btn_post.setText("接收帮助");
                 btn_post.setClickable(true);
 
@@ -156,9 +155,9 @@ public class SchoolHelpDetailActivity extends BaseActivity implements View.OnCli
             btn_post.setBackgroundResource(R.drawable.btn_post_unclick);
             btn_post.setTextColor(Color.RED);
 
-            if(dataBean.getPostUid()==ToolUtils.getInt("uid")){
+            if(dataBean.getPostUid()==ToolUtils.getInt(SchoolHelpDetailActivity.this,"uid")){
                 btn_post.setText("发布者已确认你的帮助");
-            }else if(dataBean.getUid()==ToolUtils.getInt("uid")){
+            }else if(dataBean.getUid()==ToolUtils.getInt(SchoolHelpDetailActivity.this,"uid")){
                 btn_post.setText("已确认接收帮助");
                 btn_post.setClickable(true);
             }else{
@@ -179,7 +178,7 @@ public class SchoolHelpDetailActivity extends BaseActivity implements View.OnCli
         OkGo.post(HttpUtils.MODIFY_STATUS_HELP)
                 .tag(this)
                 .isMultipart(true)
-                .params("token",ToolUtils.getString("token"))
+                .params("token",ToolUtils.getString(SchoolHelpDetailActivity.this,"token"))
                 .params("id",getIntent().getIntExtra("id",0))
                 .params("status",status)
                 .execute(new StringCallback() {
@@ -208,7 +207,7 @@ public class SchoolHelpDetailActivity extends BaseActivity implements View.OnCli
         OkGo.post(HttpUtils.DELETE_SCHOOL_HELP)
                 .tag(this)
                 .isMultipart(true)
-                .params("token",ToolUtils.getString("token"))
+                .params("token",ToolUtils.getString(SchoolHelpDetailActivity.this,"token"))
                 .params("id",getIntent().getIntExtra("id",0))
                 .execute(new StringCallback() {
                     @Override
@@ -239,26 +238,44 @@ public class SchoolHelpDetailActivity extends BaseActivity implements View.OnCli
                 finish();
                 break;
             case R.id.v_delete:
-                if(uid!=ToolUtils.getInt("uid")){
+                if(uid!=ToolUtils.getInt(this,"uid")){
                     showToast("非本人无权删除");
                     return;
                 }
-                new CircleDialog.Builder()
-                        .setCanceledOnTouchOutside(false)
-                        .setCancelable(false)
+                if(uid!=ToolUtils.getInt(this,"uid")){
+                    showToast("非本人帮帮无法删除");
+                    return;
+                }
+                PromptButton confirm = new PromptButton("确定", new PromptButtonListener() {
+                    @Override
+                    public void onClick(PromptButton button) {
+                        postDelete();
 
-                        .setTitle("删除")
-                        .setText("是否确定删除该动态？")
+                    }
+                });
 
-                        .setNegative("取消", null)
-                        .setPositive("确定", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        postDelete();
-                                    }
-                                }
-                        )
-                        .show(getSupportFragmentManager());
+                promptDialog.showWarnAlert("确认是否删除", new PromptButton("取消", new PromptButtonListener() {
+                    @Override
+                    public void onClick(PromptButton button) {
+                        promptDialog.dismiss();
+                    }
+                }), confirm);
+//                new CircleDialog.Builder()
+//                        .setCanceledOnTouchOutside(false)
+//                        .setCancelable(false)
+//
+//                        .setTitle("删除")
+//                        .setText("是否确定删除该动态？")
+//
+//                        .setNegative("取消", null)
+//                        .setPositive("确定", new View.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(View view) {
+//                                        postDelete();
+//                                    }
+//                                }
+//                        )
+//                        .show(getSupportFragmentManager());
                 break;
 
         }

@@ -16,7 +16,6 @@ import com.bumptech.glide.Glide;
 import com.example.downtoearth.toget.R;
 import com.example.downtoearth.toget.adapter.CommentAdapter;
 import com.example.downtoearth.toget.bean.Comment;
-import com.example.downtoearth.toget.bean.DynamicListBean;
 import com.example.downtoearth.toget.impl.onDialogItemClickListener;
 import com.example.downtoearth.toget.utils.HttpUtils;
 import com.example.downtoearth.toget.utils.ToolUtils;
@@ -24,7 +23,6 @@ import com.example.downtoearth.toget.view.CustomDialog;
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
-import com.mylhyl.circledialog.CircleDialog;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadmoreListener;
@@ -35,6 +33,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.leefeng.promptlibrary.PromptButton;
+import me.leefeng.promptlibrary.PromptButtonListener;
+import me.leefeng.promptlibrary.PromptDialog;
 import okhttp3.Call;
 import okhttp3.Response;
 
@@ -55,6 +56,8 @@ public class CommentDetailActivity extends BaseActivity implements View.OnClickL
     private int mNextPage = 1;
 
     private int uid;
+
+    private PromptDialog promptDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,8 +80,9 @@ public class CommentDetailActivity extends BaseActivity implements View.OnClickL
         cb_like = findViewById(R.id.cb_like);
 
         Drawable[] drawables = cb_like.getCompoundDrawables();
-        drawables[0].setBounds(0,0,ToolUtils.dip2px(24),ToolUtils.dip2px(24));
+        drawables[0].setBounds(0,0,ToolUtils.dip2px(this,24),ToolUtils.dip2px(this,24));
         cb_like.setCompoundDrawables(drawables[0], null, null, null);
+        promptDialog=new PromptDialog(this);
     }
 
     public void initData() {
@@ -99,7 +103,7 @@ public class CommentDetailActivity extends BaseActivity implements View.OnClickL
                     public void onDelete() {
                         Comment.DataBean dataBean= (Comment.DataBean) mDataList.get(position);
 
-                        if(uid==ToolUtils.getInt("uid")||dataBean.getUid()==ToolUtils.getInt("uid")){
+                        if(uid==ToolUtils.getInt(CommentDetailActivity.this,"uid")||dataBean.getUid()==ToolUtils.getInt(CommentDetailActivity.this,"uid")){
                             postDelete(position);
 
                         }else{
@@ -163,7 +167,7 @@ public class CommentDetailActivity extends BaseActivity implements View.OnClickL
         OkGo.post(HttpUtils.COMMENT_DETAIL)
                 .tag(this)
                 .isMultipart(true)
-                .params("token", ToolUtils.getString("token"))
+                .params("token", ToolUtils.getString(this,"token"))
                 .params("id", getIntent().getIntExtra("id", 0))
                 .execute(new StringCallback() {
                     @Override
@@ -187,7 +191,7 @@ public class CommentDetailActivity extends BaseActivity implements View.OnClickL
         OkGo.post(HttpUtils.GET_SUB_COMMENTS)
                 .tag(this)
                 .isMultipart(true)
-                .params("token", ToolUtils.getString("token"))
+                .params("token", ToolUtils.getString(this,"token"))
                 .params("currentPage", mNextPage)
                 .params("parent_id", getIntent().getIntExtra("id", 0))
                 .execute(new StringCallback() {
@@ -247,7 +251,7 @@ public class CommentDetailActivity extends BaseActivity implements View.OnClickL
         OkGo.post(HttpUtils.DELETE_COMMENT)
                 .tag(this)
                 .isMultipart(true)
-                .params("token", ToolUtils.getString("token"))
+                .params("token", ToolUtils.getString(this,"token"))
                 .params("id", getIntent().getIntExtra("id", 0))
                 .execute(new StringCallback() {
                     @Override
@@ -274,7 +278,7 @@ public class CommentDetailActivity extends BaseActivity implements View.OnClickL
         OkGo.post(HttpUtils.DELETE_SUB_COMMENT)
                 .tag(this)
                 .isMultipart(true)
-                .params("token",ToolUtils.getString("token"))
+                .params("token",ToolUtils.getString(this,"token"))
                 .params("id",dataBean.getId())
                 .execute(new StringCallback() {
                     @Override
@@ -322,26 +326,41 @@ public class CommentDetailActivity extends BaseActivity implements View.OnClickL
                 finish();
                 break;
             case R.id.layout_delete:
-                if(uid!=ToolUtils.getInt("uid")){
+                if(uid!=ToolUtils.getInt(this,"uid")){
                     showToast("非本人无权删除");
                     return;
                 }
-                new CircleDialog.Builder()
-                        .setCanceledOnTouchOutside(false)
-                        .setCancelable(false)
 
-                        .setTitle("删除")
-                        .setText("是否确定删除该动态？")
+                PromptButton confirm = new PromptButton("确定", new PromptButtonListener() {
+                    @Override
+                    public void onClick(PromptButton button) {
+                        postDelete();
 
-                        .setNegative("取消", null)
-                        .setPositive("确定", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        postDelete();
-                                    }
-                                }
-                        )
-                        .show(getSupportFragmentManager());
+                    }
+                });
+
+                promptDialog.showWarnAlert("确认是否删除", new PromptButton("取消", new PromptButtonListener() {
+                    @Override
+                    public void onClick(PromptButton button) {
+                        promptDialog.dismiss();
+                    }
+                }), confirm);
+//                new CircleDialog.Builder()
+//                        .setCanceledOnTouchOutside(false)
+//                        .setCancelable(false)
+//
+//                        .setTitle("删除")
+//                        .setText("是否确定删除该动态？")
+//
+//                        .setNegative("取消", null)
+//                        .setPositive("确定", new View.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(View view) {
+//                                        postDelete();
+//                                    }
+//                                }
+//                        )
+//                        .show(getSupportFragmentManager());
                 break;
             case R.id.layout_comment:
                 PublishCommentActivity.startActivityForSubComment(this,getIntent().getIntExtra("id",0),uid,tv_name.getText().toString(),1000);
@@ -358,7 +377,7 @@ public class CommentDetailActivity extends BaseActivity implements View.OnClickL
         OkGo.post(HttpUtils.AWESOME_COMMENT)
                 .tag(this)
                 .isMultipart(true)
-                .params("token", ToolUtils.getString("token"))
+                .params("token", ToolUtils.getString(this,"token"))
                 .params("id", getIntent().getIntExtra("id",0))
                 .params("isLike", cb_like.isChecked()? 0 : 1)
                 .execute(new StringCallback() {

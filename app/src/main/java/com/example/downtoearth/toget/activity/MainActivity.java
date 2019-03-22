@@ -2,9 +2,14 @@ package com.example.downtoearth.toget.activity;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.design.internal.BottomNavigationMenuView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -14,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +38,8 @@ import com.example.downtoearth.toget.utils.HttpUtils;
 import com.example.downtoearth.toget.utils.PermissionHelper;
 import com.example.downtoearth.toget.utils.PermissionInterface;
 import com.example.downtoearth.toget.utils.ToolUtils;
+import com.example.downtoearth.toget.view.lazyviewpager.LazyFragmentPagerAdapter;
+import com.example.downtoearth.toget.view.lazyviewpager.LazyViewPagerAdapter;
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
@@ -42,14 +50,20 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.event.MessageEvent;
+import cn.jpush.im.android.api.event.OfflineMessageEvent;
+import cn.jpush.im.android.api.model.Conversation;
+import cn.jpush.im.android.api.model.Message;
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.leefeng.promptlibrary.PromptButton;
 import me.leefeng.promptlibrary.PromptButtonListener;
 import me.leefeng.promptlibrary.PromptDialog;
 import okhttp3.Call;
 import okhttp3.Response;
+import q.rorbin.badgeview.QBadgeView;
 
-public class MainActivity extends BaseActivity implements PermissionInterface {
+public class MainActivity extends FragmentActivity implements PermissionInterface {
 
     private DrawerLayout mDrawerLayout;
 
@@ -62,6 +76,9 @@ public class MainActivity extends BaseActivity implements PermissionInterface {
     private PromptDialog promptDialog;
 
 
+    private BottomNavigationView btnNavView;
+    private TextView tv_unread;
+    private QBadgeView qBadgeView;
     @Override
     public void onBackPressed() {
         PromptButton confirm = new PromptButton("确定", new PromptButtonListener() {
@@ -83,6 +100,8 @@ public class MainActivity extends BaseActivity implements PermissionInterface {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        JMessageClient.registerEventReceiver(this);
+
         ActivityCollector.finishOther(this);
 
         //初始化并发起权限申请
@@ -92,7 +111,7 @@ public class MainActivity extends BaseActivity implements PermissionInterface {
         promptDialog = new PromptDialog(this);
         mDrawerLayout = findViewById(R.id.drawerlayout);
         NavigationView navView = findViewById(R.id.nav_view);
-        ActionBar actionBar = getSupportActionBar();
+     //   ActionBar actionBar = getSupportActionBar();
 
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -100,7 +119,8 @@ public class MainActivity extends BaseActivity implements PermissionInterface {
                 mDrawerLayout.closeDrawers();
                 switch (item.getItemId()) {
                     case R.id.login_out:
-                        ToolUtils.putString("token", "");
+
+                        ToolUtils.putString(MainActivity.this,"token", "");
                         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                         startActivity(intent);
                         finish();
@@ -117,16 +137,29 @@ public class MainActivity extends BaseActivity implements PermissionInterface {
         });
 
 
-        mFragmentList = new ArrayList<>();
-        mFragmentList.add(new ServiceFragment());
 
+
+        mFragmentList = new ArrayList<>();
+
+        mFragmentList.add(new ServiceFragment());
         mFragmentList.add(new HomeFragment());
-        mFragmentList.add(new ChatFragment());
+
+        ChatFragment chatFragment;
+        mFragmentList.add(chatFragment=new ChatFragment());
+        chatFragment.setGetUnReadCount(new ChatFragment.OnGetUnReadCount() {
+            @Override
+            public void getUnReadCount(int unReadCount) {
+                showBadgeView(2,unReadCount);
+            }
+        });
 
         final ViewPager viewPager = findViewById(R.id.view_pager);
-        viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), mFragmentList));
+        viewPager.setAdapter(new CustomLazyFragmentPagerAdapter(getSupportFragmentManager()));
+        //getSupportFragmentManager(), mFragmentList));
         viewPager.setCurrentItem(0);
-        BottomNavigationView btnNavView = findViewById(R.id.bot_nav_view);
+         btnNavView = findViewById(R.id.bot_nav_view);
+
+        viewPager.setOffscreenPageLimit(2);
 
         btnNavView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -148,6 +181,36 @@ public class MainActivity extends BaseActivity implements PermissionInterface {
             }
         });
 
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position){
+                    case 0:
+                        btnNavView.setSelectedItemId(R.id.home);
+
+                        break;
+                    case 1:
+                        btnNavView.setSelectedItemId(R.id.find);
+
+                        break;
+                    case 2:
+                        btnNavView.setSelectedItemId(R.id.news);
+
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
         View headView = navView.getHeaderView(0);
         mHeadPic = headView.findViewById(R.id.image_head);
         mUserName = headView.findViewById(R.id.username);
@@ -155,6 +218,47 @@ public class MainActivity extends BaseActivity implements PermissionInterface {
 
         loadData();
         checkUpdate();
+
+    }
+
+    /**
+     * BottomNavigationView显示角标
+     *
+     * @param viewIndex tab索引
+     * @param showNumber 显示的数字，小于等于0是将不显示
+     */
+    private void showBadgeView(int viewIndex, int showNumber) {
+        // 具体child的查找和view的嵌套结构请在源码中查看
+        // 从bottomNavigationView中获得BottomNavigationMenuView
+        BottomNavigationMenuView menuView = (BottomNavigationMenuView) btnNavView.getChildAt(0);
+        // 从BottomNavigationMenuView中获得childview, BottomNavigationItemView
+        if (viewIndex < menuView.getChildCount()) {
+            // 获得viewIndex对应子tab
+            View view = menuView.getChildAt(viewIndex);
+            // 从子tab中获得其中显示图片的ImageView
+            View icon = view.findViewById(android.support.design.R.id.icon);
+            // 获得图标的宽度
+            int iconWidth = icon.getWidth();
+            // 获得tab的宽度/2
+            int tabWidth = view.getWidth() / 2;
+            // 计算badge要距离右边的距离
+            int spaceWidth = tabWidth - iconWidth;
+
+            if(qBadgeView==null){
+                qBadgeView=  new QBadgeView(this);
+                qBadgeView.bindTarget(view).setGravityOffset(spaceWidth, 3, false);
+            }
+            // 显示badegeview
+            if(showNumber==0){
+                qBadgeView.hide(true);
+                //new QBadgeView(this).bindTarget(view).setGravityOffset(spaceWidth, 3, false).setBadgeBackgroundColor(Color.).setBadgeNumber(6);
+
+            }else{
+                qBadgeView.setBadgeNumber(showNumber);
+                //new QBadgeView(this).bindTarget(view).setGravityOffset(spaceWidth, 3, false).setBadgeNumber(showNumber);
+
+            }
+        }
     }
 
     @Override
@@ -162,7 +266,9 @@ public class MainActivity extends BaseActivity implements PermissionInterface {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case EditInfoActivity.EDIT_INFO:
-                getUserInfo();
+                if(resultCode==RESULT_OK){
+                    getUserInfo();
+                }
                 break;
         }
     }
@@ -179,7 +285,6 @@ public class MainActivity extends BaseActivity implements PermissionInterface {
 
     public void updateUI(String dataStr) {
         UserInfo.DataBean.UserInfoBean uib = (new Gson()).fromJson(dataStr, UserInfo.DataBean.UserInfoBean.class);
-        //UserInfo.DataBean.UserInfoBean uib=lb.getData().getUserInfo();
         if (uib.getHeadPic() != null) {
             Glide.with(this).load(HttpUtils.DOWNLOAD_URL + uib.getHeadPic()).into(mHeadPic);
         }
@@ -193,13 +298,13 @@ public class MainActivity extends BaseActivity implements PermissionInterface {
         OkGo.post(HttpUtils.GET_USER_INFO)
                 .tag(this)
                 .isMultipart(true)
-                .params("token", ToolUtils.getString("token"))
+                .params("token", ToolUtils.getString(this,"token"))
                 .headers("Content-Type", "application/json")
                 .execute(new StringCallback() {
 
                     @Override
                     public void onSuccess(String s, Call call, Response response) {
-                        Log.e(TAG, s);
+                      //  Log.e(TAG, s);
                         try {
                             JSONObject jsonObject = new JSONObject(s);
                             if (jsonObject.getInt("code") == 200) {
@@ -220,7 +325,7 @@ public class MainActivity extends BaseActivity implements PermissionInterface {
                 .execute(new StringCallback() {
                     @Override
                     public void onSuccess(String s, Call call, Response response) {
-                        log(s);
+                      //  log(s);
                         try {
                             JSONObject jsonObject = new JSONObject(s);
                             if (jsonObject.getInt("code") == 200) {
@@ -331,5 +436,34 @@ public class MainActivity extends BaseActivity implements PermissionInterface {
     public void requestPermissionsFail() {
 
     }
+    /**
+     *  接收在线消息
+     **/
 
+
+
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+    }
+
+    private  class CustomLazyFragmentPagerAdapter extends LazyFragmentPagerAdapter {
+
+        private CustomLazyFragmentPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(ViewGroup container, int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+    }
 }

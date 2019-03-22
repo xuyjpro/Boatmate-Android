@@ -1,8 +1,10 @@
 package com.example.downtoearth.toget.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
@@ -12,12 +14,15 @@ import android.widget.RelativeLayout;
 import com.example.downtoearth.toget.R;
 import com.example.downtoearth.toget.utils.ToolUtils;
 
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.api.BasicCallback;
+
 
 /**
  * Created by DownToEarth on 2018/5/8.
  */
 
-public class SplashActivity extends BaseActivity {
+public class SplashActivity extends Activity {
     private RelativeLayout layout_bg;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -27,7 +32,6 @@ public class SplashActivity extends BaseActivity {
 
         setContentView(R.layout.activity_splash);
 
-        ToolUtils.setContext(this);
         layout_bg=findViewById(R.id.layout_bg);
         AlphaAnimation alphaAnimation=new AlphaAnimation(0.1f,1.0f);
         alphaAnimation.setDuration(1000);
@@ -40,15 +44,27 @@ public class SplashActivity extends BaseActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                String token= ToolUtils.getString("token");
-                if(token==null||token.isEmpty()){
+                String token= ToolUtils.getString(SplashActivity.this,"token");
+                if(TextUtils.isEmpty(token)){
                     Intent intent=new Intent(SplashActivity.this,LoginActivity.class);
                     startActivity(intent);
                 }else{
+                    String username=ToolUtils.getString(SplashActivity.this,"username");
+                    String password=ToolUtils.getString(SplashActivity.this,"password");
+                    if(TextUtils.isEmpty(username)||TextUtils.isEmpty(password)){
+                        Intent intent=new Intent(SplashActivity.this,LoginActivity.class);
+                        startActivity(intent);
 
-                    Intent intent=new Intent(SplashActivity.this,MainActivity.class);
-                    Log.e(TAG,token);
-                    startActivity(intent);
+                    }else{
+                        JMessageClient.login(username, password, new BasicCallback() {
+                            @Override
+                            public void gotResult(int i, String s) {
+                            }
+                        });
+                        Intent intent=new Intent(SplashActivity.this,MainActivity.class);
+                        startActivity(intent);
+                    }
+
                 }
                 finish();
             }

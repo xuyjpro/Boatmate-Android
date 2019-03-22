@@ -45,3 +45,26 @@
 
 #========================protobuf================================
 -keep class com.google.protobuf.** {*;}
+#Execution failed for task ':app:transformClassesAndResourcesWithProguardForRelease'.
+#-ignorewarnings
+
+#混淆okio
+-keep class com.google.gson.** { *; }
+-dontwarn okio.**
+
+
+-keep class okhttp3.** { *; }
+
+#混淆glide
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
+-keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+#api <=27
+-dontwarn com.bumptech.glide.load.resource.bitmap.VideoDecoder
+# for DexGuard only
+#-keepresourcexmlelements manifest/application/meta-data@value=GlideModule
+
+-dontwarn feign.**

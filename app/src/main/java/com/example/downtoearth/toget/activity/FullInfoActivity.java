@@ -242,9 +242,7 @@ public class FullInfoActivity extends BaseActivity implements View.OnClickListen
                                     }
                                 });
 
-                                ToolUtils.putString("token",getIntent().getStringExtra("token"));
-
-
+                                ToolUtils.putString(FullInfoActivity.this,"token",getIntent().getStringExtra("token"));
 
 
                                 Intent intent=new Intent(FullInfoActivity.this,MainActivity.class);

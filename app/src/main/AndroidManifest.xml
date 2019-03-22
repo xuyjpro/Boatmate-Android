@@ -30,16 +30,20 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
+        <!--<activity android:name="com.example.downtoearth.toget.activity.SplashActivity">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
+
         <activity android:name=".activity.SplashActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.FruitActivity"
-            android:theme="@style/FruitActivityTheme" />
         <activity android:name=".activity.RegisterActivity" />
         <activity android:name=".activity.LoginActivity" />
         <activity android:name=".activity.MainActivity" />
@@ -63,7 +67,19 @@
 
         <service android:name=".utils.DownloadIntentService" />
 
-        <activity android:name=".activity.ChatActivity"></activity>
+        <activity android:name=".activity.ChatActivity"
+            ></activity>
+        <activity android:name=".activity.MainPagerActivity"
+            android:theme="@style/MainPagerTheme"/>
+        <activity android:name=".activity.StuffDetailActivity"
+
+            android:theme="@style/MainPagerTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+            </intent-filter>
+        </activity>
     </application>
+
 
 </manifest>

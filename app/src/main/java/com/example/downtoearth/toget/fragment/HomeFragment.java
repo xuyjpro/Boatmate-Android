@@ -51,8 +51,8 @@ public class HomeFragment extends BaseFragment {
             Drawable drawable = getResources().getDrawable(
                     R.drawable.home_top_rb);
             // / 这一步必须要做,否则不会显示.
-            drawable.setBounds(0, 0, ToolUtils.dip2px(16),
-                    ToolUtils.dip2px(4));
+            drawable.setBounds(0, 0, ToolUtils.dip2px(getContext(),16),
+                    ToolUtils.dip2px(getContext(),4));
             rb.setCompoundDrawables(null, null, null, drawable);
         }
         initData();
@@ -94,7 +94,6 @@ public class HomeFragment extends BaseFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        showToast("home");
 
         switch (requestCode){
             case PUBLISH_DYNAMIC:

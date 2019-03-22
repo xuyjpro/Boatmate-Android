@@ -22,8 +22,8 @@ public class StuffLossAdapter extends RecyclerView.Adapter<StuffLossAdapter.View
     private onItemClickListener listener;
     private List list;
     public interface  onItemClickListener{
-        public void onItemClick(int position);
-        public void onMoreClick(int position);
+         void onItemClick(int position);
+         void onMoreClick(int position);
         void onPictureClick(int position,int index);
     }
     public StuffLossAdapter(List list){

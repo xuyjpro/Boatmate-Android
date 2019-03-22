@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.downtoearth.toget.R;
 import com.example.downtoearth.toget.activity.ChatActivity;
 import com.example.downtoearth.toget.activity.DynamicDetailActivity;
+import com.example.downtoearth.toget.activity.MainPagerActivity;
 import com.example.downtoearth.toget.activity.PublishCommentActivity;
 import com.example.downtoearth.toget.adapter.DynamicAdapter;
 import com.example.downtoearth.toget.bean.DynamicListBean;
@@ -110,15 +111,11 @@ public class DynamicFragment extends BaseFragment {
 
             @Override
             public void onHeadClick(int position) {
-                if(position==0){
-                    Conversation.createSingleConversation("15259900001");
-
-                }else if(position==1){
-                    Conversation.createSingleConversation("15259900002");
-                    Intent intent=new Intent(getContext(),ChatActivity.class);
-                    intent.putExtra("username","15259900002");
-                    startActivity(intent);
-                }
+                DynamicListBean.DataBean dataBean= (DynamicListBean.DataBean) mDynamicList.get(position);
+                Intent intent=new Intent(getContext(),MainPagerActivity.class);
+                intent.putExtra("id",dataBean.getUid());
+                intent.putExtra("nickname",dataBean.getNickname());
+                startActivity(intent);
             }
         });
 
@@ -138,7 +135,7 @@ public class DynamicFragment extends BaseFragment {
         }
         OkGo.post(HttpUtils.DYNAMIC_LIST)
                 .tag(this)
-                .params("token", ToolUtils.getString("token"))
+                .params("token", ToolUtils.getString(getContext(),"token"))
                 .params("currentPage", mNextPage)
                 .params("category", getArguments().getInt("category"))
                 .execute(new StringCallback() {
@@ -171,7 +168,7 @@ public class DynamicFragment extends BaseFragment {
         OkGo.post(HttpUtils.LIKE_CLICK)
                 .tag(this)
                 .isMultipart(true)
-                .params("token", ToolUtils.getString("token"))
+                .params("token", ToolUtils.getString(getContext(),"token"))
                 .params("id", dataBean.getId())
                 .params("isLike", dataBean.isLike() ? 1 : 0)
                 .execute(new StringCallback() {

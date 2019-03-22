@@ -48,7 +48,14 @@ public class Stuff {
         private String headPic;
         private String nickname;
         private StuffBean stuff;
+        private String heartWord;
 
+        public String getHeartWord() {
+            return heartWord;
+        }
+        public void setHeartWord(String heartWord) {
+            this.heartWord = heartWord;
+        }
         public String getHeadPic() {
             return headPic;
         }

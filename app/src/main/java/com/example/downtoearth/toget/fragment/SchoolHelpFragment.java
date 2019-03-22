@@ -99,7 +99,7 @@ public class SchoolHelpFragment extends BaseFragment {
         }
         HttpParams httpParams = new HttpParams();
         if (getArguments().getInt("category") == 1) {
-            httpParams.put("token", ToolUtils.getString("token"));
+            httpParams.put("token", ToolUtils.getString(getContext(),"token"));
         }
         OkGo.post(HttpUtils.GET_SCHOOL_HELPS)
                 .tag(this)

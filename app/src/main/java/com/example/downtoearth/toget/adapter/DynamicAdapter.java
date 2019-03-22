@@ -46,7 +46,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<DynamicAdapter.ViewHold
         void onCommentClick(int position);
         void onHeadClick(int position);
     }
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView iv_head;
         private TextView tv_name;
         private RelativeLayout layout_more;
@@ -76,7 +76,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<DynamicAdapter.ViewHold
             tv_share = itemView.findViewById(R.id.tv_share);
 
             Drawable[] drawables=cb_like.getCompoundDrawables();
-            drawables[0].setBounds(0,0,ToolUtils.dip2px(22),ToolUtils.dip2px(22));
+            drawables[0].setBounds(0,0,ToolUtils.dip2px(mContext,22),ToolUtils.dip2px(mContext,22));
             cb_like.setCompoundDrawables(drawables[0],null,null,null);
         }
     }

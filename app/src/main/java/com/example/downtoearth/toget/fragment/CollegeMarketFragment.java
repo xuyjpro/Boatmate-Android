@@ -1,5 +1,6 @@
 package com.example.downtoearth.toget.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.example.downtoearth.toget.R;
+import com.example.downtoearth.toget.activity.StuffDetailActivity;
 import com.example.downtoearth.toget.adapter.CollegeMarketAdapter;
 import com.example.downtoearth.toget.adapter.StuffLossAdapter;
 import com.example.downtoearth.toget.bean.Stuff;
@@ -25,6 +27,8 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Response;
+
+import static android.app.Activity.RESULT_OK;
 
 public class CollegeMarketFragment extends BaseFragment {
     private RecyclerView recyclerView;
@@ -60,6 +64,12 @@ public class CollegeMarketFragment extends BaseFragment {
             @Override
             public void onItemClick(int position) {
 
+                Intent intent=new Intent(getContext(),StuffDetailActivity.class);
+                intent.putExtra("id",((Stuff.DataBean)mDataList.get(position)).getStuff().getId());
+                intent.putExtra("position",position);
+
+                intent.putExtra("isMarket",true);
+                startActivityForResult(intent,1000);
             }
 
             @Override
@@ -100,7 +110,7 @@ public class CollegeMarketFragment extends BaseFragment {
         httpParams.put("category",getArguments().getInt("category"));
 
         if(getArguments().getBoolean("isMy")){
-            httpParams.put("token",ToolUtils.getString("token"));
+            httpParams.put("token",ToolUtils.getString(getContext(),"token"));
         }
         OkGo.post(HttpUtils.GET_STUFFS)
                 .tag(this)
@@ -125,6 +135,18 @@ public class CollegeMarketFragment extends BaseFragment {
             mAdapter.notifyDataSetChanged();
         }else{
             showToast("暂无更多数据");
+        }
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==1000){
+            if(resultCode==RESULT_OK&&data!=null){
+                int position=data.getIntExtra("position",0);
+
+                mDataList.remove(position);
+                mAdapter.notifyItemChanged(position);
+            }
         }
     }
 }

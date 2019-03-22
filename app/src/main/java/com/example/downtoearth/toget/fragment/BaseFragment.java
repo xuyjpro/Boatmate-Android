@@ -11,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.event.MessageEvent;
+
 public abstract class BaseFragment extends Fragment {
 
     public String TAG;
@@ -19,7 +22,8 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         TAG=getClass().getSimpleName();
-
+        //订阅接收消息,子类只要重写onEvent就能收到消息
+        JMessageClient.registerEventReceiver(this);
         View view=initView();
         initData();
         return view;
@@ -32,5 +36,15 @@ public abstract class BaseFragment extends Fragment {
     }
     public void log(String msg){
         Log.e(TAG,msg);
+    }
+
+    @Override
+    public void onDestroy() {
+        JMessageClient.unRegisterEventReceiver(this);
+
+        super.onDestroy();
+    }
+    public void onEvent(MessageEvent event) {
+
     }
 }

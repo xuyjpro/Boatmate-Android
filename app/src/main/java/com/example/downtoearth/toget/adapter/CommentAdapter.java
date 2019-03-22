@@ -51,7 +51,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         void onCommentClick(int position);
         void onDetailClick(int position);
     }
-    static class ViewHolder extends RecyclerView.ViewHolder {
+     class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView iv_head;
         private TextView tv_name;
         private TextView tv_content;
@@ -78,7 +78,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
 
             Drawable[] drawables=cb_like.getCompoundDrawables();
-            drawables[02].setBounds(0,0,ToolUtils.dip2px(20),ToolUtils.dip2px(20));
+            drawables[02].setBounds(0,0,ToolUtils.dip2px(mContext,20),ToolUtils.dip2px(mContext,20));
             cb_like.setCompoundDrawables(null,null,drawables[2],null);
         }
     }

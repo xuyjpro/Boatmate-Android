@@ -53,6 +53,8 @@ public class HttpUtils {
     * */
     public static final String GET_STUFFS="http://"+IP+"/boatmate/"+"getStuffs";
     public static final String PUBLISH_STUFF="http://"+IP+"/boatmate/"+"publishStuff";
+    public static final String GET_STUFF_DETAIL="http://"+IP+"/boatmate/"+"stuffDetail";
+    public static final String STUFF_DELETE="http://"+IP+"/boatmate/"+"stuffDelete";
 
 
 }

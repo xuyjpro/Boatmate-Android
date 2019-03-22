@@ -140,12 +140,15 @@ public class RegisterActivity extends BaseActivity {
 
 
 
+        ToolUtils.putString(this,"username",uib.getPhone());
+        ToolUtils.putString(this,"password",uib.getPassword());
 
 
         JMessageClient.register(uib.getPhone(), uib.getPassword(),  new BasicCallback() {
             @Override
             public void gotResult(int i, String s) {
                 showToast(s);
+                log("jMessage"+s);
             }
         });
 
@@ -153,7 +156,7 @@ public class RegisterActivity extends BaseActivity {
                 .class);
         intent.putExtra("token",userInfo.getData().getToken());
 
-        ToolUtils.putInt("uid", uib.getId());
+        ToolUtils.putInt(this,"uid", uib.getId());
 
         startActivity(intent);
 

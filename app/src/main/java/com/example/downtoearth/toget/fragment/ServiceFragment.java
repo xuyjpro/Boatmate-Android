@@ -67,7 +67,7 @@ public class ServiceFragment extends BaseFragment implements View.OnClickListene
         for(int i=0;i<layout_tvs.getChildCount();i++){
             TextView tv= (TextView) layout_tvs.getChildAt(i);
             Drawable[] drawables=tv.getCompoundDrawables();
-            drawables[1].setBounds(0,0,ToolUtils.dip2px(54),ToolUtils.dip2px(54));
+            drawables[1].setBounds(0,0,ToolUtils.dip2px(getContext(),54),ToolUtils.dip2px(getContext(),54));
             tv.setCompoundDrawables(null,drawables[1],null,null);
         }
 

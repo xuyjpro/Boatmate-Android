@@ -25,7 +25,6 @@ import com.example.downtoearth.toget.view.CustomDialog;
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
-import com.mylhyl.circledialog.CircleDialog;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadmoreListener;
@@ -90,7 +89,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
         promptDialog=new PromptDialog(this);
 
         Drawable[] drawables=cb_like.getCompoundDrawables();
-        drawables[0].setBounds(0,0,ToolUtils.dip2px(24),ToolUtils.dip2px(24));
+        drawables[0].setBounds(0,0,ToolUtils.dip2px(this,24),ToolUtils.dip2px(this,24));
         cb_like.setCompoundDrawables(drawables[0],null,null,null);
 
     }
@@ -131,7 +130,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
 
                         Comment.DataBean dataBean= (Comment.DataBean) mDataList.get(position);
 
-                        if(uid==ToolUtils.getInt("uid")||dataBean.getUid()==ToolUtils.getInt("uid")){
+                        if(uid==ToolUtils.getInt(DynamicDetailActivity.this,"uid")||dataBean.getUid()==ToolUtils.getInt(DynamicDetailActivity.this,"uid")){
 
                             PromptButton confirm = new PromptButton("确定", new PromptButtonListener() {
                                 @Override
@@ -210,7 +209,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
         OkGo.post(HttpUtils.DYNAMIC_DETAIL)
                 .tag(this)
                 .isMultipart(true)
-                .params("token",ToolUtils.getString("token"))
+                .params("token",ToolUtils.getString(this,"token"))
                 .params("id",getIntent().getIntExtra("id",0))
                 .execute(new StringCallback() {
                     @Override
@@ -241,7 +240,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
         OkGo.post(HttpUtils.GET_COMMENTS)
                 .tag(this)
                 .isMultipart(true)
-                .params("token",ToolUtils.getString("token"))
+                .params("token",ToolUtils.getString(this,"token"))
                 .params("currentPage",mNextPage)
                 .params("parent_id",getIntent().getIntExtra("id",0))
                 .execute(new StringCallback() {
@@ -275,7 +274,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
         OkGo.post(HttpUtils.DYNAMIC_DELETE)
                 .tag(this)
                 .isMultipart(true)
-                .params("token",ToolUtils.getString("token"))
+                .params("token",ToolUtils.getString(this,"token"))
                 .params("id",getIntent().getIntExtra("id",0))
                 .execute(new StringCallback() {
                     @Override
@@ -302,7 +301,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
         OkGo.post(HttpUtils.DELETE_COMMENT)
                 .tag(this)
                 .isMultipart(true)
-                .params("token",ToolUtils.getString("token"))
+                .params("token",ToolUtils.getString(this,"token"))
                 .params("id",dataBean.getId())
                 .execute(new StringCallback() {
                     @Override
@@ -382,7 +381,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
                 break;
             case R.id.layout_delete:
 
-                if(uid!=ToolUtils.getInt("uid")){
+                if(uid!=ToolUtils.getInt(this,"uid")){
                     showToast("非本人动态无法删除");
                     return;
                 }
@@ -422,7 +421,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
         OkGo.post(HttpUtils.LIKE_CLICK)
                 .tag(this)
                 .isMultipart(true)
-                .params("token", ToolUtils.getString("token"))
+                .params("token", ToolUtils.getString(this,"token"))
                 .params("id", getIntent().getIntExtra("id",0))
                 .params("isLike", cb_like.isChecked()? 0 : 1)
                 .execute(new StringCallback() {
@@ -462,7 +461,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
         OkGo.post(HttpUtils.AWESOME_COMMENT)
                 .tag(this)
                 .isMultipart(true)
-                .params("token", ToolUtils.getString("token"))
+                .params("token", ToolUtils.getString(this,"token"))
                 .params("id", dataBean.getId())
                 .params("isLike", dataBean.isLike() ? 1 : 0)
                 .execute(new StringCallback() {

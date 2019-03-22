@@ -88,7 +88,7 @@ public class PublishCommentActivity extends BaseActivity {
         OkGo.post(url)
                 .tag(this)
                 .isMultipart(true)
-                .params("token",ToolUtils.getString("token"))
+                .params("token",ToolUtils.getString(this,"token"))
                 .params(httpParams)
                 .execute(new StringCallback() {
                     @Override

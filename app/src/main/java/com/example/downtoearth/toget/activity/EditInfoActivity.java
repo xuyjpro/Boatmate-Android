@@ -30,8 +30,11 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.callback.DownloadAvatarCallback;
+import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback;
 import cn.jpush.im.api.BasicCallback;
 import cn.qqtheme.framework.picker.DatePicker;
 import cn.qqtheme.framework.picker.OptionPicker;
@@ -94,7 +97,7 @@ public class EditInfoActivity extends BaseActivity implements View.OnClickListen
         OkGo.post(HttpUtils.GET_USER_INFO)
                 .tag(this)
                 .isMultipart(true)
-                .params("token",ToolUtils.getString("token"))
+                .params("token",ToolUtils.getString(this,"token"))
                 .headers("Content-Type","application/json")
                 .execute(new StringCallback() {
 
@@ -251,6 +254,13 @@ public class EditInfoActivity extends BaseActivity implements View.OnClickListen
 
         if(headPicPath!=null){
             httpParams.put("headPic",new File(headPicPath));
+            JMessageClient.updateUserAvatar(new File(headPicPath), new BasicCallback() {
+                @Override
+                public void gotResult(int i, String s) {
+                    log(s);
+                }
+            });
+
         }
 
         if(tv_gender.getText().equals("男")){
@@ -270,7 +280,7 @@ public class EditInfoActivity extends BaseActivity implements View.OnClickListen
         OkGo.post(HttpUtils.EDIT_INFO)
                 .tag(this)
                 .isMultipart(true)
-                .params("token",ToolUtils.getString("token"))
+                .params("token",ToolUtils.getString(this,"token"))
                 .params(httpParams)
                 .execute(new StringCallback() {
                     @Override
@@ -280,16 +290,22 @@ public class EditInfoActivity extends BaseActivity implements View.OnClickListen
                             JSONObject jsonObject=new JSONObject(s);
                             if(jsonObject.getInt("code")==200){
                                 promptDialog.showSuccess("提交成功");
-                                JMessageClient.updateUserAvatar(new File(headPicPath), new BasicCallback() {
+
+
+                                cn.jpush.im.android.api.model.UserInfo userInfo=JMessageClient.getMyInfo();
+                                userInfo.setNickname(tv_nickname.getText().toString());
+                                JMessageClient.updateMyInfo(cn.jpush.im.android.api.model.UserInfo.Field.nickname, userInfo, new BasicCallback() {
                                     @Override
                                     public void gotResult(int i, String s) {
                                         log(s);
                                     }
                                 });
+                                setResult(RESULT_OK);
+                                finish();
 
-                                Intent intent=new Intent(EditInfoActivity.this,MainActivity.class);
-                                intent.putExtra("user_info",jsonObject.getString("data"));
-                                startActivity(intent);
+//                                Intent intent=new Intent(EditInfoActivity.this,MainActivity.class);
+//                                intent.putExtra("user_info",jsonObject.getString("data"));
+//                                startActivity(intent);
                             }else{
                                 promptDialog.showError(jsonObject.getString("message"));
                             }
@@ -315,4 +331,5 @@ public class EditInfoActivity extends BaseActivity implements View.OnClickListen
                 }
         }
     }
+
 }

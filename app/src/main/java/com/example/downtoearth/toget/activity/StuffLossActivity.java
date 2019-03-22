@@ -27,10 +27,12 @@ public class StuffLossActivity extends AppCompatActivity {
     private RadioGroup radioGroup;
     private List<BaseFragment> fragments;
 
+    private int category;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_home);
+        category=getIntent().getIntExtra("category",0);
         initView();
         initData();
 
@@ -43,7 +45,7 @@ public class StuffLossActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(StuffLossActivity.this,PublishStuffActivity.class);
-
+                intent.putExtra("category",category);
                 startActivityForResult(intent,1000);
             }
         });
@@ -54,16 +56,15 @@ public class StuffLossActivity extends AppCompatActivity {
             Drawable drawable = getResources().getDrawable(
                     R.drawable.home_top_rb);
             // / 这一步必须要做,否则不会显示.
-            drawable.setBounds(0, 0, ToolUtils.dip2px(16),
-                    ToolUtils.dip2px(4));
+            drawable.setBounds(0, 0, ToolUtils.dip2px(this,16),
+                    ToolUtils.dip2px(this,4));
             rb.setCompoundDrawables(null, null, null, drawable);
             if(i==0){
-                if(getIntent().getIntExtra("category",0)==0){
+                if(category==0){
                     rb.setText("寻物启事");
 
                 }else{
                     rb.setText("失物招领");
-
                 }
             }else{
                 rb.setText("我发布的");
@@ -74,8 +75,8 @@ public class StuffLossActivity extends AppCompatActivity {
     public void initData() {
         fragments=new ArrayList<>();
 
-        fragments.add(StuffLossFragment.newInstance(getIntent().getIntExtra("category",0),false));
-        fragments.add(StuffLossFragment.newInstance(getIntent().getIntExtra("category",0),true));
+        fragments.add(StuffLossFragment.newInstance(category,false));
+        fragments.add(StuffLossFragment.newInstance(category,true));
 
 
         viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(),fragments));

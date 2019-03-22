@@ -67,7 +67,7 @@ public class PublishDynamicActivity extends BaseActivity {
                 .tag(this)
                 .isMultipart(true)
                 .params("content",content)
-                .params("token",ToolUtils.getString("token"))
+                .params("token",ToolUtils.getString(this,"token"))
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Response response, Exception e) {

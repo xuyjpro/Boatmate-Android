@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/home"
+    <item
+        android:id="@+id/home"
+        android:enabled="true"
         android:icon="@mipmap/home"
-        app:showAsAction="always"
         android:title="主页"
-        android:enabled="true"/>
-    <item android:id="@+id/find"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/find"
+        android:enabled="true"
         android:icon="@mipmap/find"
-        app:showAsAction="always"
         android:title="广场"
-        android:enabled="true"/>
-    <item android:id="@+id/news"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/news"
+        android:enabled="true"
+
         android:icon="@mipmap/news"
-        app:showAsAction="always"
         android:title="通知"
-        android:enabled="true"/>
+
+        app:showAsAction="always" />
 </menu>

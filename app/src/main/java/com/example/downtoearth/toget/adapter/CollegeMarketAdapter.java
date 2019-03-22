@@ -22,8 +22,8 @@ public class CollegeMarketAdapter extends RecyclerView.Adapter<CollegeMarketAdap
     private onItemClickListener listener;
     private List list;
     public interface  onItemClickListener{
-        public void onItemClick(int position);
-        public void onMoreClick(int position);
+         void onItemClick(int position);
+         void onMoreClick(int position);
         void onPictureClick(int position);
     }
     public CollegeMarketAdapter(List list){

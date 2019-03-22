@@ -53,8 +53,8 @@ public class SchoolHelpActivity extends BaseActivity {
             RadioButton rb= (RadioButton) radioGroup.getChildAt(i);
             Drawable drawable = getResources().getDrawable(
                     R.drawable.home_top_rb);
-            drawable.setBounds(0, 0, ToolUtils.dip2px(16),
-                    ToolUtils.dip2px(4));
+            drawable.setBounds(0, 0, ToolUtils.dip2px(this,16),
+                    ToolUtils.dip2px(this,4));
             rb.setCompoundDrawables(null, null, null, drawable);
             if(i==0){
                 rb.setText("所有帮帮");

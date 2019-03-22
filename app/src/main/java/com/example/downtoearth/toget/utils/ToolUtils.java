@@ -21,29 +21,28 @@ import java.text.SimpleDateFormat;
  */
 
 public class ToolUtils {
-    private static Context context;
 
-    public static void setContext(Context c) {
-        context = c;
+
+    public static String getString(Context context,String key){
+        if(context!=null){
+            SharedPreferences sp=context.getSharedPreferences("boamate",Context.MODE_PRIVATE);
+
+            return  sp.getString(key,"");
+        }
+        return "";
+
     }
-
-    public static String getString( String key){
+    public static int getInt(Context context,String key){
         SharedPreferences sp=context.getSharedPreferences("boamate",Context.MODE_PRIVATE);
-
-        return  sp.getString(key,"");
-    }
-    public static int getInt(String key){
-        SharedPreferences sp=context.getSharedPreferences("boamate",Context.MODE_PRIVATE);
-
         return  sp.getInt(key,0);
     }
-    public static void putString(String key,String value){
+    public static void putString(Context context,String key,String value){
         SharedPreferences sp=context.getSharedPreferences("boamate",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor=sp.edit();
         editor.putString(key,value);
         editor.commit();
     }
-    public static void putInt(String key,int value){
+    public static void putInt(Context context,String key,int value){
         SharedPreferences sp=context.getSharedPreferences("boamate",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor=sp.edit();
         editor.putInt(key,value);
@@ -69,7 +68,7 @@ public class ToolUtils {
         return  format.format(time);
     }
 
-    public static int px2dip(float pxValue) {
+    public static int px2dip(Context context,float pxValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
@@ -81,7 +80,7 @@ public class ToolUtils {
      *            （DisplayMetrics类中属性density）
      * @return
      */
-    public static int dip2px( float dipValue) {
+    public static int dip2px(Context context, float dipValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dipValue * scale + 0.5f);
     }
@@ -109,9 +108,12 @@ public class ToolUtils {
         return versionCode;
     }
     public static void doHttpError(Context context){
-        Toast.makeText(context,"服务器异常，请联系客服：15252478436",Toast.LENGTH_SHORT).show();
-        Intent intent=new Intent(context,LoginActivity.class);
-        context.startActivity(intent);
+        if(context!=null){
+            Toast.makeText(context,"服务器异常，请联系客服：15252478436",Toast.LENGTH_SHORT).show();
+            Intent intent=new Intent(context,LoginActivity.class);
+            context.startActivity(intent);
+        }
+
     }
     public static String getAppKey(){
         return "48147ad8cbf1e43998ba7fd9";

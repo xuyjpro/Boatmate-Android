@@ -14,6 +14,7 @@ import com.example.downtoearth.toget.R;
 import com.example.downtoearth.toget.adapter.ViewPagerAdapter;
 import com.example.downtoearth.toget.fragment.BaseFragment;
 import com.example.downtoearth.toget.fragment.CollegeMarketFragment;
+import com.example.downtoearth.toget.fragment.CollegeMarketFragment2;
 import com.example.downtoearth.toget.fragment.StuffLossFragment;
 import com.example.downtoearth.toget.utils.ToolUtils;
 
@@ -41,7 +42,7 @@ public class CollegeMarketActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(CollegeMarketActivity.this,PublishStuffActivity.class);
-
+                intent.putExtra("category",2);
                 startActivityForResult(intent,1000);
             }
         });
@@ -52,8 +53,8 @@ public class CollegeMarketActivity extends BaseActivity {
             Drawable drawable = getResources().getDrawable(
                     R.drawable.home_top_rb);
             // / 这一步必须要做,否则不会显示.
-            drawable.setBounds(0, 0, ToolUtils.dip2px(16),
-                    ToolUtils.dip2px(4));
+            drawable.setBounds(0, 0, ToolUtils.dip2px(this,16),
+                    ToolUtils.dip2px(this,4));
             rb.setCompoundDrawables(null, null, null, drawable);
             if(i==0){
                 rb.setText("校园跳蚤");
@@ -66,8 +67,8 @@ public class CollegeMarketActivity extends BaseActivity {
     public void initData() {
         fragments=new ArrayList<>();
 
-        fragments.add(CollegeMarketFragment.newInstance(2,false));
-        fragments.add(CollegeMarketFragment.newInstance(2,true));
+        fragments.add(CollegeMarketFragment2.newInstance(2,false));
+        fragments.add(CollegeMarketFragment2.newInstance(2,true));
 
 
         viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(),fragments));
@@ -92,11 +93,11 @@ public class CollegeMarketActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+       // super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==1000){
             if(resultCode==RESULT_OK){
-                ((CollegeMarketFragment)fragments.get(0)).getNewData(true);
-               ((CollegeMarketFragment)fragments.get(1)).getNewData(true);
+                ((CollegeMarketFragment2)fragments.get(0)).getNewData(true);
+               ((CollegeMarketFragment2)fragments.get(1)).getNewData(true);
 
             }
         }

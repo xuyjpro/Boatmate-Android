@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="FruitActivityTheme" parent="AppTheme">
+    <style name="MainPagerTheme" parent="AppTheme">
 
     </style>
 
