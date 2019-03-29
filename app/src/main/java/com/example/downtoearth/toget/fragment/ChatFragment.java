@@ -111,7 +111,6 @@ public class ChatFragment extends BaseFragment {
                 @Override
                 public void getUnReadCount(int unReadCount) {
                     if(getUnReadCount!=null){
-                        showToast(mAdapter.getUnReadCount()+"");
                         getUnReadCount.getUnReadCount(mAdapter.getUnReadCount());
                     }
                 }

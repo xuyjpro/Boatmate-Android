@@ -137,4 +137,13 @@ public class PublishCommentActivity extends BaseActivity {
 
         activity.startActivityForResult(intent,requestCode);
     }
+    public static void startActivityForSubComment(Activity activity, int parentId,int toUid,String nickname,int position,int requestCode){
+        Intent intent=new Intent(activity,PublishCommentActivity.class);
+        intent.putExtra("parent_id",parentId);
+        intent.putExtra("to_uid",toUid);
+        intent.putExtra("nickname",nickname);
+        intent.putExtra("comment",false);
+        intent.putExtra("position",position);
+        activity.startActivityForResult(intent,requestCode);
+    }
 }

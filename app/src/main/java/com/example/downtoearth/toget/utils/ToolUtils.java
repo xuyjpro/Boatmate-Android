@@ -1,11 +1,15 @@
 package com.example.downtoearth.toget.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -23,7 +27,10 @@ import java.text.SimpleDateFormat;
 public class ToolUtils {
 
 
+    private static int width;
+    private static int height;
     public static String getString(Context context,String key){
+
         if(context!=null){
             SharedPreferences sp=context.getSharedPreferences("boamate",Context.MODE_PRIVATE);
 
@@ -84,6 +91,25 @@ public class ToolUtils {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dipValue * scale + 0.5f);
     }
+    public static int getWidth(Context context){
+
+        if(width==0){
+            Resources resources = context.getResources();
+            DisplayMetrics dm = resources.getDisplayMetrics();
+            width = dm.widthPixels;
+        }
+
+        return width;
+    }
+    public static int getHeight(Context context){
+        if(height==0){
+            Resources resources = context.getResources();
+            DisplayMetrics dm = resources.getDisplayMetrics();
+            height = dm.heightPixels;
+        }
+
+        return height;
+    }
     public static void loadImage(Context context,ImageView imageView,String url){
 
         Glide.with(context).load(HttpUtils.DOWNLOAD_URL+url).into(imageView);
@@ -110,8 +136,8 @@ public class ToolUtils {
     public static void doHttpError(Context context){
         if(context!=null){
             Toast.makeText(context,"服务器异常，请联系客服：15252478436",Toast.LENGTH_SHORT).show();
-            Intent intent=new Intent(context,LoginActivity.class);
-            context.startActivity(intent);
+//            Intent intent=new Intent(context,LoginActivity.class);
+//            context.startActivity(intent);
         }
 
     }

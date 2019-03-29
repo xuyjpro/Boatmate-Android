@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RadioButton;
@@ -14,8 +13,6 @@ import com.example.downtoearth.toget.R;
 import com.example.downtoearth.toget.adapter.ViewPagerAdapter;
 import com.example.downtoearth.toget.fragment.BaseFragment;
 import com.example.downtoearth.toget.fragment.CollegeMarketFragment;
-import com.example.downtoearth.toget.fragment.CollegeMarketFragment2;
-import com.example.downtoearth.toget.fragment.StuffLossFragment;
 import com.example.downtoearth.toget.utils.ToolUtils;
 
 import java.util.ArrayList;
@@ -67,8 +64,8 @@ public class CollegeMarketActivity extends BaseActivity {
     public void initData() {
         fragments=new ArrayList<>();
 
-        fragments.add(CollegeMarketFragment2.newInstance(2,false));
-        fragments.add(CollegeMarketFragment2.newInstance(2,true));
+        fragments.add(CollegeMarketFragment.newInstance(2,false));
+        fragments.add(CollegeMarketFragment.newInstance(2,true));
 
 
         viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(),fragments));
@@ -93,11 +90,11 @@ public class CollegeMarketActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-       // super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==1000){
             if(resultCode==RESULT_OK){
-                ((CollegeMarketFragment2)fragments.get(0)).getNewData(true);
-               ((CollegeMarketFragment2)fragments.get(1)).getNewData(true);
+                ((CollegeMarketFragment)fragments.get(0)).getNewData(true);
+               ((CollegeMarketFragment)fragments.get(1)).getNewData(true);
 
             }
         }

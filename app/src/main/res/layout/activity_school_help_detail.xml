@@ -19,10 +19,9 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:background="@drawable/btn_post_add_corner"
+            android:background="@color/colorPrimaryDark"
             android:gravity="center"
             android:foreground="?android:selectableItemBackground"
-            android:layout_margin="5dp"
             android:textColor="#ffffff"
             android:textSize="16sp" />
         <Button

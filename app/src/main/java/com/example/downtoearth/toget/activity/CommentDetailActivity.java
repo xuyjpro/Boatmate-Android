@@ -1,5 +1,7 @@
 package com.example.downtoearth.toget.activity;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import com.example.downtoearth.toget.impl.onDialogItemClickListener;
 import com.example.downtoearth.toget.utils.HttpUtils;
 import com.example.downtoearth.toget.utils.ToolUtils;
 import com.example.downtoearth.toget.view.CustomDialog;
+import com.example.downtoearth.toget.view.SelectDialog;
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
@@ -58,11 +61,14 @@ public class CommentDetailActivity extends BaseActivity implements View.OnClickL
     private int uid;
 
     private PromptDialog promptDialog;
+    private ClipboardManager myClipboard;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment_detail);
-
+        promptDialog=new PromptDialog(this);
+        promptDialog.showLoading("加载中");
         initView();
         initData();
         initListener();
@@ -82,10 +88,12 @@ public class CommentDetailActivity extends BaseActivity implements View.OnClickL
         Drawable[] drawables = cb_like.getCompoundDrawables();
         drawables[0].setBounds(0,0,ToolUtils.dip2px(this,24),ToolUtils.dip2px(this,24));
         cb_like.setCompoundDrawables(drawables[0], null, null, null);
-        promptDialog=new PromptDialog(this);
+        myClipboard = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
+
     }
 
     public void initData() {
+
         rv_comment.setLayoutManager(new LinearLayoutManager(this));
         mDataList = new ArrayList();
         rv_comment.setAdapter(mAdapter = new CommentAdapter(mDataList,true));
@@ -97,33 +105,41 @@ public class CommentDetailActivity extends BaseActivity implements View.OnClickL
 
             @Override
             public void onItemClick(final int position) {
-                CustomDialog customDialog=new CustomDialog(CommentDetailActivity.this,true);
-                customDialog.setOnItemClick(new onDialogItemClickListener() {
-                    @Override
-                    public void onDelete() {
-                        Comment.DataBean dataBean= (Comment.DataBean) mDataList.get(position);
 
-                        if(uid==ToolUtils.getInt(CommentDetailActivity.this,"uid")||dataBean.getUid()==ToolUtils.getInt(CommentDetailActivity.this,"uid")){
-                            postDelete(position);
+               SelectDialog selectDialog=new SelectDialog(CommentDetailActivity.this);
 
-                        }else{
-                            showToast("非本人无权删除");
-                        }
+               selectDialog.showSelectDialog(new SelectDialog.SelectItem("回复评论", new SelectDialog.OnSelectItemClickListener() {
+                   @Override
+                   public void onItemClick() {
+                       Comment.DataBean dataBean= (Comment.DataBean) mDataList.get(position);
+                       PublishCommentActivity.startActivityForSubComment(CommentDetailActivity.this,getIntent().getIntExtra("id",0),dataBean.getUid(),dataBean.getNickname(),1000);
 
-                    }
+                   }
+               }),new SelectDialog.SelectItem("删除评论", new SelectDialog.OnSelectItemClickListener() {
+                   @Override
+                   public void onItemClick() {
+                       Comment.DataBean dataBean= (Comment.DataBean) mDataList.get(position);
 
-                    @Override
-                    public void onDetail() {
+                       if(uid==ToolUtils.getInt(CommentDetailActivity.this,"uid")||dataBean.getUid()==ToolUtils.getInt(CommentDetailActivity.this,"uid")){
+                           postDelete(position);
 
-                    }
+                       }else{
+                           showToast("非本人无权删除");
+                       }
+                   }
+               }),new SelectDialog.SelectItem("复制评论", new SelectDialog.OnSelectItemClickListener() {
+                   @Override
+                   public void onItemClick() {
+                       Comment.DataBean dataBean= (Comment.DataBean) mDataList.get(position);
 
-                    @Override
-                    public void onCopy() {
-                        showToast("未开发");
+                       ClipData myClip;
+                       String text = dataBean.getContent();
+                       myClip = ClipData.newPlainText("text", text);
+                       myClipboard.setPrimaryClip(myClip);
+                       showToast("复制成功");
+                   }
+               }));
 
-                    }
-                });
-                customDialog.show();
             }
 
             @Override
@@ -177,8 +193,11 @@ public class CommentDetailActivity extends BaseActivity implements View.OnClickL
                             JSONObject jsonObject = new JSONObject(s);
                             if (jsonObject.getInt("code") == 200) {
                                 parseDetail(jsonObject.getString("data"));
+                                promptDialog.showSuccess("加载成功");
+
                             } else {
-                                showToast(jsonObject.getString("message"));
+                                promptDialog.showError(jsonObject.getString("message"));
+                                finish();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

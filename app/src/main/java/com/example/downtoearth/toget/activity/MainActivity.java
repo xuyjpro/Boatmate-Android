@@ -63,7 +63,7 @@ import okhttp3.Call;
 import okhttp3.Response;
 import q.rorbin.badgeview.QBadgeView;
 
-public class MainActivity extends FragmentActivity implements PermissionInterface {
+public class MainActivity extends BaseActivity implements PermissionInterface {
 
     private DrawerLayout mDrawerLayout;
 
@@ -77,7 +77,6 @@ public class MainActivity extends FragmentActivity implements PermissionInterfac
 
 
     private BottomNavigationView btnNavView;
-    private TextView tv_unread;
     private QBadgeView qBadgeView;
     @Override
     public void onBackPressed() {
@@ -100,7 +99,6 @@ public class MainActivity extends FragmentActivity implements PermissionInterfac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        JMessageClient.registerEventReceiver(this);
 
         ActivityCollector.finishOther(this);
 
@@ -111,7 +109,6 @@ public class MainActivity extends FragmentActivity implements PermissionInterfac
         promptDialog = new PromptDialog(this);
         mDrawerLayout = findViewById(R.id.drawerlayout);
         NavigationView navView = findViewById(R.id.nav_view);
-     //   ActionBar actionBar = getSupportActionBar();
 
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -119,6 +116,7 @@ public class MainActivity extends FragmentActivity implements PermissionInterfac
                 mDrawerLayout.closeDrawers();
                 switch (item.getItemId()) {
                     case R.id.login_out:
+                        JMessageClient.logout();
 
                         ToolUtils.putString(MainActivity.this,"token", "");
                         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
@@ -129,6 +127,14 @@ public class MainActivity extends FragmentActivity implements PermissionInterfac
                         Intent intent1 = new Intent(MainActivity.this, EditInfoActivity.class);
 
                         startActivityForResult(intent1, EditInfoActivity.EDIT_INFO);
+                        break;
+                    case R.id.feed_back:
+                        Intent intent2 = new Intent(MainActivity.this, FeedBackActivity.class);
+                        startActivity(intent2);
+                        break;
+                    case R.id.setting:
+                        Intent intent3 = new Intent(MainActivity.this, SettingActivity.class);
+                        startActivity(intent3);
                         break;
                 }
 
@@ -155,7 +161,6 @@ public class MainActivity extends FragmentActivity implements PermissionInterfac
 
         final ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(new CustomLazyFragmentPagerAdapter(getSupportFragmentManager()));
-        //getSupportFragmentManager(), mFragmentList));
         viewPager.setCurrentItem(0);
          btnNavView = findViewById(R.id.bot_nav_view);
 
@@ -445,6 +450,7 @@ public class MainActivity extends FragmentActivity implements PermissionInterfac
 
     @Override
     protected void onDestroy() {
+        JMessageClient.logout();
 
         super.onDestroy();
     }

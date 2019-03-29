@@ -1,5 +1,7 @@
 package com.example.downtoearth.toget.activity;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import com.example.downtoearth.toget.impl.onDialogItemClickListener;
 import com.example.downtoearth.toget.utils.HttpUtils;
 import com.example.downtoearth.toget.utils.ToolUtils;
 import com.example.downtoearth.toget.view.CustomDialog;
+import com.example.downtoearth.toget.view.SelectDialog;
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
@@ -60,6 +63,9 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
     private List mDataList;
     private int mNextPage=1;
     private int uid;
+
+    private ClipboardManager myClipboard;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,9 +93,12 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
         tv_no_comment=findViewById(R.id.tv_no_comment);
 
         promptDialog=new PromptDialog(this);
+        myClipboard = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
+
 
         Drawable[] drawables=cb_like.getCompoundDrawables();
         drawables[0].setBounds(0,0,ToolUtils.dip2px(this,24),ToolUtils.dip2px(this,24));
+
         cb_like.setCompoundDrawables(drawables[0],null,null,null);
 
     }
@@ -123,7 +132,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
 
             @Override
             public void onItemClick(final int position) {
-                CustomDialog customDialog=new CustomDialog(DynamicDetailActivity.this,false);
+               /* CustomDialog customDialog=new CustomDialog(DynamicDetailActivity.this,false);
                 customDialog.setOnItemClick(new onDialogItemClickListener() {
                     @Override
                     public void onDelete() {
@@ -169,7 +178,42 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
 
                     }
                 });
-                customDialog.show();
+                customDialog.show();*/
+
+                SelectDialog selectDialog=new SelectDialog(DynamicDetailActivity.this);
+
+                selectDialog.showSelectDialog(new SelectDialog.SelectItem("回复评论", new SelectDialog.OnSelectItemClickListener() {
+                    @Override
+                    public void onItemClick() {
+                        Comment.DataBean dataBean= (Comment.DataBean) mDataList.get(position);
+                        PublishCommentActivity.startActivityForSubComment(DynamicDetailActivity.this,dataBean.getId(),
+                                dataBean.getUid(),dataBean.getNickname(),position,1001);
+
+                    }
+                }),new SelectDialog.SelectItem("删除评论", new SelectDialog.OnSelectItemClickListener() {
+                    @Override
+                    public void onItemClick() {
+                        Comment.DataBean dataBean= (Comment.DataBean) mDataList.get(position);
+
+                        if(uid==ToolUtils.getInt(DynamicDetailActivity.this,"uid")||dataBean.getUid()==ToolUtils.getInt(DynamicDetailActivity.this,"uid")){
+                            postDelete(position);
+
+                        }else{
+                            showToast("非本人无权删除");
+                        }
+                    }
+                }),new SelectDialog.SelectItem("复制评论", new SelectDialog.OnSelectItemClickListener() {
+                    @Override
+                    public void onItemClick() {
+                        Comment.DataBean dataBean= (Comment.DataBean) mDataList.get(position);
+
+                        ClipData myClip;
+                        String text = dataBean.getContent();
+                        myClip = ClipData.newPlainText("text", text);
+                        myClipboard.setPrimaryClip(myClip);
+                        showToast("复制成功");
+                    }
+                }));
             }
 
             @Override
@@ -193,7 +237,6 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
         getDetail();
         getCommentList(true);
 
-        promptDialog.showSuccessDelay("加载成功",500);
 
 
     }
@@ -221,13 +264,14 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
 
                     @Override
                     public void onSuccess(String s, Call call, Response response) {
-                        Log.e(TAG,s);
                         try {
                             JSONObject jsonObject=new JSONObject(s);
                             if(jsonObject.getInt("code")==200){
                               parseDetail(jsonObject.getString("data"));
+                              promptDialog.showLoading("加载成功");
                             }else{
-                                showToast(jsonObject.getString("message"));
+                             //   showToast(jsonObject.getString("message"));
+                                promptDialog.showError(jsonObject.getString("message"));
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -524,6 +568,16 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
 
             }
         }else if(requestCode==1001){//添加子评论
+            if(resultCode==RESULT_OK){  //评论成功
+
+                int position=data.getIntExtra("position",0);
+
+                Comment.DataBean dataBean= (Comment.DataBean) mDataList.get(position);
+                dataBean.setComment(dataBean.getComment()+1);
+                mAdapter.notifyItemChanged(position);
+
+
+            }
 
         }else if(requestCode==1002){//评论详情
             if(data!=null){

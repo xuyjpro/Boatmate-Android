@@ -3,7 +3,6 @@ package com.example.downtoearth.toget.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +10,7 @@ import android.view.View;
 import com.example.downtoearth.toget.R;
 import com.example.downtoearth.toget.activity.StuffDetailActivity;
 import com.example.downtoearth.toget.adapter.CollegeMarketAdapter;
-import com.example.downtoearth.toget.adapter.StuffLossAdapter;
+import com.example.downtoearth.toget.adapter.CollegeMarketAdapter2;
 import com.example.downtoearth.toget.bean.Stuff;
 import com.example.downtoearth.toget.utils.HttpUtils;
 import com.example.downtoearth.toget.utils.ToolUtils;
@@ -22,9 +21,6 @@ import com.lzy.okgo.model.HttpParams;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadmoreListener;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import okhttp3.Call;
 import okhttp3.Response;
 
@@ -33,12 +29,12 @@ import static android.app.Activity.RESULT_OK;
 public class CollegeMarketFragment extends BaseFragment {
     private RecyclerView recyclerView;
 
-    private CollegeMarketAdapter mAdapter;
-    private List mDataList;
+    private CollegeMarketAdapter2 mAdapter;
+
     private RefreshLayout smartRefreshLayout;
 
     private int mNextPage = 1;
-    public static CollegeMarketFragment newInstance(int category,boolean isMy) {
+    public static CollegeMarketFragment newInstance(int category, boolean isMy) {
         CollegeMarketFragment fragment = new CollegeMarketFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("category", category);
@@ -56,16 +52,15 @@ public class CollegeMarketFragment extends BaseFragment {
 
     @Override
     public void initData() {
-        mDataList = new ArrayList();
 
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
-        recyclerView.setAdapter(mAdapter = new CollegeMarketAdapter(mDataList));
+        recyclerView.setAdapter(mAdapter = new CollegeMarketAdapter2());
         mAdapter.setOnItemListener(new CollegeMarketAdapter.onItemClickListener() {
             @Override
             public void onItemClick(int position) {
 
                 Intent intent=new Intent(getContext(),StuffDetailActivity.class);
-                intent.putExtra("id",((Stuff.DataBean)mDataList.get(position)).getStuff().getId());
+                intent.putExtra("id",((Stuff.DataBean)mAdapter.getList().get(position)).getStuff().getId());
                 intent.putExtra("position",position);
 
                 intent.putExtra("isMarket",true);
@@ -115,12 +110,12 @@ public class CollegeMarketFragment extends BaseFragment {
         OkGo.post(HttpUtils.GET_STUFFS)
                 .tag(this)
                 .isMultipart(true)
+                .params("pageSize",20)
                 .params(httpParams)
                 .execute(new StringCallback() {
                     @Override
                     public void onSuccess(String s, Call call, Response response) {
 
-                        log(s);
                         parseData(s,isRefresh);
                     }
                 });
@@ -128,11 +123,7 @@ public class CollegeMarketFragment extends BaseFragment {
     public void parseData(String s,boolean isRefresh){
         Stuff stuff=new Gson().fromJson(s,Stuff.class);
         if(stuff.getData()!=null&&stuff.getData().size()!=0){
-            if(isRefresh){
-                mDataList.clear();
-            }
-            mDataList.addAll(stuff.getData());
-            mAdapter.notifyDataSetChanged();
+            mAdapter.addAll(stuff.getData(),isRefresh);
         }else{
             showToast("暂无更多数据");
         }
@@ -143,9 +134,7 @@ public class CollegeMarketFragment extends BaseFragment {
         if(requestCode==1000){
             if(resultCode==RESULT_OK&&data!=null){
                 int position=data.getIntExtra("position",0);
-
-                mDataList.remove(position);
-                mAdapter.notifyItemChanged(position);
+                mAdapter.remove(position);
             }
         }
     }

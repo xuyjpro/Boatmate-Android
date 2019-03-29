@@ -105,7 +105,9 @@ private PromptDialog promptDialog;
             btn_post.setClickable(true);
             btn_post.setText("提供帮助");
 
-            btn_post.setBackgroundResource(R.drawable.btn_post_add_corner);
+            btn_post.setBackgroundColor(Color.parseColor("#4D4D4D"));
+
+          //  btn_post.setBackgroundResource(R.drawable.btn_post_add_corner);
             btn_post.setTextColor(Color.WHITE);
 
             btn_post.setOnClickListener(new View.OnClickListener() {
@@ -124,14 +126,16 @@ private PromptDialog promptDialog;
             btn_post.setClickable(false);
 
             if(dataBean.getPostUid()==ToolUtils.getInt(SchoolHelpDetailActivity.this,"uid")){
-                btn_post.setBackgroundResource(R.drawable.btn_post_add_corner);
+                //btn_post.setBackgroundResource(R.drawable.btn_post_add_corner);
+                btn_post.setBackgroundColor(Color.parseColor("#4D4D4D"));
 
                 btn_post.setText("等待发布者确认你的帮助...");
             }else if(dataBean.getUid()==ToolUtils.getInt(SchoolHelpDetailActivity.this,"uid")){
                 btn_post.setText("接收帮助");
                 btn_post.setClickable(true);
 
-                btn_post.setBackgroundResource(R.drawable.btn_post_add_corner);
+             //   btn_post.setBackgroundResource(R.drawable.btn_post_add_corner);
+                btn_post.setBackgroundColor(Color.parseColor("#4D4D4D"));
                 btn_post.setTextColor(Color.WHITE);
                 btn_post.setOnClickListener(new View.OnClickListener() {
                     @Override
