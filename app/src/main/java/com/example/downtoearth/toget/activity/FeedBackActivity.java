@@ -25,13 +25,15 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
 
     private EditText et_content;
     private Button btn_submit;
-
+    private PromptDialog promptDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed_back);
         initView();
         initEvent();
+      promptDialog=new PromptDialog(this);
+
     }
     public void initView(){
         et_content=findViewById(R.id.et_content);
@@ -44,14 +46,14 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
 
     public void post(){
         String feedback=et_content.getText().toString();
-        final PromptDialog promptDialog=new PromptDialog(this);
 
         if(TextUtils.isEmpty(feedback)){
-            promptDialog.showError("请填写反馈意见");
+            showToast("反馈意见不能为空");
             return;
         }
-
-        promptDialog.showLoading("提交中");
+//
+//        final PromptDialog promptDialog1=new PromptDialog(this);
+//        promptDialog1.showLoading("提交中");
         OkGo.post(HttpUtils.PUBLISH_FEEDBACK)
                 .tag(this)
                 .isMultipart(true)
@@ -63,10 +65,12 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
                         try {
                             JSONObject jsonObject=new JSONObject(s);
                             if(jsonObject.getInt("code")==200){
-                                promptDialog.showSuccess("提交成功");
+//                                promptDialog1.showSuccess("提交成功");
+                                showToast("提交成功");
                                 finish();
                             }else{
-                                promptDialog.showError(jsonObject.getString("message"));
+                                showToast(jsonObject.getString("message"));
+//                                promptDialog1.showError(jsonObject.getString("message"));
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -81,7 +85,6 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
                 finish();
                 break;
             case R.id.bt_submit:
-                final PromptDialog promptDialog=new PromptDialog(this);
                 promptDialog.showWarnAlert("确认是否提交反馈",new PromptButton("取消", new PromptButtonListener() {
                     @Override
                     public void onClick(PromptButton promptButton) {

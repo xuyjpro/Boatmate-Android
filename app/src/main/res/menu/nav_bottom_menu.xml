@@ -14,11 +14,20 @@
         android:title="广场"
         app:showAsAction="always" />
     <item
+        android:id="@+id/blogs"
+        android:enabled="true"
+
+        android:icon="@mipmap/theblog"
+        android:title="博客"
+
+        app:showAsAction="always" />
+    <item
         android:id="@+id/news"
         android:enabled="true"
 
         android:icon="@mipmap/news"
-        android:title="通知"
+        android:title="聊天"
 
         app:showAsAction="always" />
+
 </menu>

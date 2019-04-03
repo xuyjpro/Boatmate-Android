@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.downtoearth.toget.R;
@@ -47,11 +48,14 @@ public class ChatFragment extends BaseFragment {
     private RefreshLayout smartRefreshLayout;
 
     private OnGetUnReadCount getUnReadCount;
+    private ViewGroup layout_nothing;
     @Override
     public View initView() {
         View view=LayoutInflater.from(getContext()).inflate(R.layout.fragment_chat,null);
         recyclerView = view.findViewById(R.id.recycler_view);
         smartRefreshLayout=view.findViewById(R.id.smart_refresh);
+        layout_nothing=view.findViewById(R.id.layout_nothing);
+
         JMessageClient.registerEventReceiver(this);
 
         return view;
@@ -96,17 +100,16 @@ public class ChatFragment extends BaseFragment {
                 refreshlayout.finishRefresh(1000);
             }
         });
-//        refreshConversations();
 
-        smartRefreshLayout.autoRefresh();
+        refreshConversations();
+
     }
     public void refreshConversations(){
 
         mDynamicList=JMessageClient.getConversationList();
         if(mDynamicList!=null&&mDynamicList.size()!=0){
-//            mAdapter=new ChatAdapter(mDynamicList);
-
-
+            layout_nothing.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
             mAdapter.setDataList(mDynamicList, new OnGetUnReadCount() {
                 @Override
                 public void getUnReadCount(int unReadCount) {
@@ -116,9 +119,9 @@ public class ChatFragment extends BaseFragment {
                 }
             });
 
-//            mAdapter.notifyItemRangeChanged(0,mDynamicList.size());
         }else{
-
+            recyclerView.setVisibility(View.GONE);
+            layout_nothing.setVisibility(View.VISIBLE);
         }
 
     }

@@ -58,5 +58,9 @@ public class HttpUtils {
     public static final String STUFF_DELETE=PROJECT_URL+"stuffDelete";
 
     public static final String PUBLISH_FEEDBACK=PROJECT_URL+"publishFeedback";
+/*
+* 博客*/
+    public static final String GET_BLOGS=PROJECT_URL+"getBlogs";
+
 
 }

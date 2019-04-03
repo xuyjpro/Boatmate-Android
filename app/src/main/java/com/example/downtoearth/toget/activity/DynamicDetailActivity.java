@@ -132,53 +132,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
 
             @Override
             public void onItemClick(final int position) {
-               /* CustomDialog customDialog=new CustomDialog(DynamicDetailActivity.this,false);
-                customDialog.setOnItemClick(new onDialogItemClickListener() {
-                    @Override
-                    public void onDelete() {
 
-                        Comment.DataBean dataBean= (Comment.DataBean) mDataList.get(position);
-
-                        if(uid==ToolUtils.getInt(DynamicDetailActivity.this,"uid")||dataBean.getUid()==ToolUtils.getInt(DynamicDetailActivity.this,"uid")){
-
-                            PromptButton confirm = new PromptButton("确定", new PromptButtonListener() {
-                                @Override
-                                public void onClick(PromptButton button) {
-                                    postDelete(position);
-
-                                }
-                            });
-
-                            promptDialog.showWarnAlert("确认是否删除", new PromptButton("取消", new PromptButtonListener() {
-                                @Override
-                                public void onClick(PromptButton button) {
-                                    promptDialog.dismiss();
-                                }
-                            }), confirm);
-
-                        }else{
-                            showToast("非本人无权删除");
-                        }
-                    }
-
-                    @Override
-                    public void onDetail() {
-                        Comment.DataBean dataBean= (Comment.DataBean) mDataList.get(position);
-
-                        Intent intent= new Intent(DynamicDetailActivity.this,CommentDetailActivity.class);
-                        intent.putExtra("id",dataBean.getId());
-                        intent.putExtra("position",position);
-                        startActivityForResult(intent,1002);
-
-                    }
-
-                    @Override
-                    public void onCopy() {
-                        showToast("未开发");
-
-                    }
-                });
-                customDialog.show();*/
 
                 SelectDialog selectDialog=new SelectDialog(DynamicDetailActivity.this);
 
@@ -232,7 +186,6 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
                 startActivityForResult(intent,1002);
             }
         });
-        PromptDialog promptDialog=new PromptDialog(this);
         promptDialog.showLoading("加载中");
         getDetail();
         getCommentList(true);
@@ -268,7 +221,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
                             JSONObject jsonObject=new JSONObject(s);
                             if(jsonObject.getInt("code")==200){
                               parseDetail(jsonObject.getString("data"));
-                              promptDialog.showLoading("加载成功");
+                              promptDialog.showSuccess("加载成功");
                             }else{
                              //   showToast(jsonObject.getString("message"));
                                 promptDialog.showError(jsonObject.getString("message"));
@@ -370,6 +323,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+
                     }
                 });
     }

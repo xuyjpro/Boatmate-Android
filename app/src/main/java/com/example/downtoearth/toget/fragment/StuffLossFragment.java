@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.example.downtoearth.toget.R;
 import com.example.downtoearth.toget.activity.PhotoBrowseActivity;
@@ -36,6 +37,7 @@ public class StuffLossFragment extends BaseFragment {
     private StuffLossAdapter mAdapter;
     private List mDataList;
     private RefreshLayout smartRefreshLayout;
+    private ViewGroup layout_nothing;
 
     private int mNextPage = 1;
 
@@ -53,6 +55,8 @@ public class StuffLossFragment extends BaseFragment {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_dynamic, null);
         recyclerView = view.findViewById(R.id.recycler_view);
         smartRefreshLayout = view.findViewById(R.id.smart_refresh);
+        layout_nothing=view.findViewById(R.id.layout_nothing);
+
         return view;
     }
 
@@ -148,12 +152,21 @@ public class StuffLossFragment extends BaseFragment {
         Stuff stuff=new Gson().fromJson(s,Stuff.class);
         if(stuff.getData()!=null&&stuff.getData().size()!=0){
             if(isRefresh){
+                recyclerView.setVisibility(View.VISIBLE);
+                layout_nothing.setVisibility(View.GONE);
                 mDataList.clear();
             }
             mDataList.addAll(stuff.getData());
             mAdapter.notifyDataSetChanged();
         }else{
-            showToast("暂无更多数据");
+            if(isRefresh){
+                recyclerView.setVisibility(View.GONE);
+                layout_nothing.setVisibility(View.VISIBLE);
+            }else{
+                showToast("没有更多数据了");
+                mNextPage--;
+            }
+
         }
     }
 

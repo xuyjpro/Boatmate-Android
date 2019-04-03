@@ -10,6 +10,7 @@ import android.util.JsonReader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.downtoearth.toget.R;
@@ -45,6 +46,7 @@ public class DynamicFragment extends BaseFragment {
     private List mDynamicList;
     private RefreshLayout smartRefreshLayout;
 
+    private ViewGroup layout_nothing;
     private int mNextPage = 1;
 
     public static DynamicFragment newInstance(int category) {
@@ -61,6 +63,7 @@ public class DynamicFragment extends BaseFragment {
         View view=LayoutInflater.from(getContext()).inflate(R.layout.fragment_dynamic,null);
         recyclerView = view.findViewById(R.id.recycler_view);
         smartRefreshLayout=view.findViewById(R.id.smart_refresh);
+        layout_nothing=view.findViewById(R.id.layout_nothing);
 
         return view;
     }
@@ -202,15 +205,25 @@ public class DynamicFragment extends BaseFragment {
     public void parseData(String s, boolean isRefresh) {
         DynamicListBean dlb = new Gson().fromJson(s, DynamicListBean.class);
         if (dlb.getData() != null&&dlb.getData().size()!=0) {
+
+
             if (isRefresh) {
+                recyclerView.setVisibility(View.VISIBLE);
+                layout_nothing.setVisibility(View.GONE);
                 mDynamicList.clear();
             }
             mDynamicList.addAll(dlb.getData());
 
             mAdapter.notifyDataSetChanged();
         } else {
-            mNextPage--;
-            showToast("没有更多数据了");
+            if(isRefresh){
+                recyclerView.setVisibility(View.GONE);
+                layout_nothing.setVisibility(View.VISIBLE);
+            }else{
+                showToast("没有更多数据了");
+                mNextPage--;
+
+            }
         }
     }
 

@@ -29,6 +29,7 @@ import com.example.downtoearth.toget.adapter.ViewPagerAdapter;
 import com.example.downtoearth.toget.bean.AppVersion;
 import com.example.downtoearth.toget.bean.UserInfo;
 import com.example.downtoearth.toget.fragment.BaseFragment;
+import com.example.downtoearth.toget.fragment.BlogFragment;
 import com.example.downtoearth.toget.fragment.ChatFragment;
 import com.example.downtoearth.toget.fragment.HomeFragment;
 import com.example.downtoearth.toget.fragment.ServiceFragment;
@@ -149,6 +150,7 @@ public class MainActivity extends BaseActivity implements PermissionInterface {
 
         mFragmentList.add(new ServiceFragment());
         mFragmentList.add(new HomeFragment());
+        mFragmentList.add(new BlogFragment());
 
         ChatFragment chatFragment;
         mFragmentList.add(chatFragment=new ChatFragment());
@@ -159,12 +161,13 @@ public class MainActivity extends BaseActivity implements PermissionInterface {
             }
         });
 
+
         final ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(new CustomLazyFragmentPagerAdapter(getSupportFragmentManager()));
         viewPager.setCurrentItem(0);
          btnNavView = findViewById(R.id.bot_nav_view);
 
-        viewPager.setOffscreenPageLimit(2);
+        viewPager.setOffscreenPageLimit(3);
 
         btnNavView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -178,9 +181,14 @@ public class MainActivity extends BaseActivity implements PermissionInterface {
                     case R.id.find:
                         viewPager.setCurrentItem(1);
                         break;
-                    case R.id.news:
+                    case R.id.blogs:
                         viewPager.setCurrentItem(2);
                         break;
+                    case R.id.news:
+                        viewPager.setCurrentItem(3);
+                        break;
+
+
                 }
                 return true;
             }
@@ -204,9 +212,15 @@ public class MainActivity extends BaseActivity implements PermissionInterface {
 
                         break;
                     case 2:
+                        btnNavView.setSelectedItemId(R.id.blogs);
+
+
+                        break;
+                    case 3:
                         btnNavView.setSelectedItemId(R.id.news);
 
                         break;
+
                 }
             }
 
