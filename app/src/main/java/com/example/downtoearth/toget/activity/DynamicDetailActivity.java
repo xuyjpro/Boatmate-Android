@@ -58,6 +58,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
     private CheckBox cb_like;
     private ViewGroup layout_comment;
     private TextView tv_no_comment;
+    private ImageView iv_picture;
     private CommentAdapter mAdapter;
     private  PromptDialog promptDialog;
     private List mDataList;
@@ -92,6 +93,8 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
         layout_comment=findViewById(R.id.layout_comment);
         tv_no_comment=findViewById(R.id.tv_no_comment);
 
+
+        iv_picture=findViewById(R.id.iv_picture);
         promptDialog=new PromptDialog(this);
         myClipboard = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
 
@@ -185,6 +188,12 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
 
                 startActivityForResult(intent,1002);
             }
+
+            @Override
+            public void onHead(int position) {
+                Comment.DataBean dataBean= (Comment.DataBean) mDataList.get(position);
+                MainPagerActivity.start(DynamicDetailActivity.this,dataBean.getUid(),dataBean.getNickname());
+            }
         });
         promptDialog.showLoading("加载中");
         getDetail();
@@ -200,6 +209,8 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
         layout_delete.setOnClickListener(this);
         findViewById(R.id.layout_back).setOnClickListener(this);
         cb_like.setOnClickListener(this);
+        iv_head.setOnClickListener(this);
+
     }
     public void getDetail(){
         OkGo.post(HttpUtils.DYNAMIC_DETAIL)
@@ -328,7 +339,7 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
                 });
     }
     public void parseDetail(String s){
-        DynamicListBean.DataBean dataBean=new Gson().fromJson(s,DynamicListBean.DataBean.class);
+        final DynamicListBean.DataBean dataBean=new Gson().fromJson(s,DynamicListBean.DataBean.class);
         tv_name.setText(dataBean.getNickname());
         tv_content.setText(dataBean.getContent());
         tv_time.setText(ToolUtils.getTime(dataBean.getTime()));
@@ -342,6 +353,21 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
         cb_like.setText(dataBean.getAwesome()+"");
         cb_like.setChecked(dataBean.isLike());
         this.uid=dataBean.getUid();
+        if(dataBean.getPicture()!=null){
+            iv_picture.setVisibility(View.VISIBLE);
+
+            Glide.with(this)
+                    .load(HttpUtils.DOWNLOAD_URL+dataBean.getPicture())
+                    .into(iv_picture);
+            iv_picture.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    PhotoBrowseActivity.startWithOnePicture(DynamicDetailActivity.this,dataBean.getPicture(),null);
+                }
+            });
+        }else{
+            iv_picture.setVisibility(View.GONE);
+        }
 
     }
     public void parseData(String s,boolean isRefresh){
@@ -361,10 +387,10 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
                 rv_comment.setVisibility(View.GONE);
                 tv_no_comment.setVisibility(View.VISIBLE);
             }else{
+                showToast("没有更多数据了");
 
                 mNextPage--;
             }
-            showToast("没有更多数据了");
         }
     }
 
@@ -372,6 +398,9 @@ public class DynamicDetailActivity extends BaseActivity implements View.OnClickL
     @Override
     public void onClick(View view) {
         switch (view.getId()){
+            case R.id.iv_head:
+                MainPagerActivity.start(this,uid,tv_name.getText().toString());
+                break;
             case R.id.layout_comment:
 
                 PublishCommentActivity.startActivityForComment(this,getIntent().getIntExtra("id",0),tv_name.getText().toString(),1000);

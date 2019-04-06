@@ -8,7 +8,7 @@ public class HttpUtils {
 
 
  //   public static final String IP="23.95.216.81";
-    private  static final String IP = "47.111.163.217:8080";
+    private  static final String IP = "118.31.76.29";
     private static final String PROJECT_URL="http://" + IP + "/boatmate/";
 
     /*
@@ -18,12 +18,15 @@ public class HttpUtils {
     public static final String GET_APP_VERSION=PROJECT_URL+"getAppVersion";
 
 
-
+    /*我的*/
     public static final String REGISTER = PROJECT_URL + "register";
     public static final String LOGIN = PROJECT_URL + "login";
     public static final String EDIT_INFO = PROJECT_URL + "editUserInfo";
     public static final String GET_USER_INFO = PROJECT_URL + "getUserInfo";
+    public static final String MODIFY_PASSWORD=PROJECT_URL+"modifyPassword";
+    /*下载*/
     public static final String DOWNLOAD_URL = "http://" + IP + "/boatmate/download/fileLoad_load?fileName=";
+    /*动态*/
     public static final String PUBLISH_DYNAMIC = PROJECT_URL + "publishDynamic";
     public static final String DYNAMIC_LIST = PROJECT_URL + "getDynamics";
     public static final  String PUBLISH_COMMENT=PROJECT_URL+"publishComment";

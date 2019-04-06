@@ -47,7 +47,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         initEvent();
     }
     public void initView(){
-        layout_password=findViewById(R.id.layout_cache);
+        layout_password=findViewById(R.id.layout_password);
         layout_about_us=findViewById(R.id.layout_about_us);
         layout_contact=findViewById(R.id.layout_contact);
         layout_cache=findViewById(R.id.layout_cache);
@@ -152,7 +152,8 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.layout_password:
-
+                Intent intent=new Intent(this,ModifyPasswordActivity.class);
+                startActivity(intent);
                 break;
             case R.id.layout_about_us:
                 break;

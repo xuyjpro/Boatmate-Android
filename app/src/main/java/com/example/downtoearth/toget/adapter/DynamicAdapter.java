@@ -45,6 +45,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<DynamicAdapter.ViewHold
         void onItemClick(int position);
         void onCommentClick(int position);
         void onHeadClick(int position);
+        void onPicture(int position);
     }
     class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView iv_head;
@@ -59,7 +60,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<DynamicAdapter.ViewHold
         private LinearLayout layout_like;
         private LinearLayout layout_comment;
         private LinearLayout layout_share;
-
+        private ImageView iv_picture;
         public ViewHolder(View itemView) {
             super(itemView);
             iv_head = itemView.findViewById(R.id.iv_head);
@@ -74,6 +75,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<DynamicAdapter.ViewHold
             tv_comment = itemView.findViewById(R.id.tv_comment);
             cb_like = itemView.findViewById(R.id.cb_like);
             tv_share = itemView.findViewById(R.id.tv_share);
+            iv_picture = itemView.findViewById(R.id.iv_picture);
 
             Drawable[] drawables=cb_like.getCompoundDrawables();
             drawables[0].setBounds(0,0,ToolUtils.dip2px(mContext,22),ToolUtils.dip2px(mContext,22));
@@ -108,15 +110,6 @@ public class DynamicAdapter extends RecyclerView.Adapter<DynamicAdapter.ViewHold
                 }
             }
         });
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position=holder.getAdapterPosition();
-                if(mListener!=null){
-                    mListener.onItemClick(position);
-                }
-            }
-        });
         holder.iv_head.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,6 +119,26 @@ public class DynamicAdapter extends RecyclerView.Adapter<DynamicAdapter.ViewHold
                 }
             }
         });
+        holder.iv_picture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position=holder.getAdapterPosition();
+                if(mListener!=null){
+                    mListener.onPicture(position);
+                }
+            }
+        });
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position=holder.getAdapterPosition();
+                if(mListener!=null){
+                    mListener.onItemClick(position);
+                }
+            }
+        });
+
+
         return holder;
     }
     @Override
@@ -143,7 +156,12 @@ public class DynamicAdapter extends RecyclerView.Adapter<DynamicAdapter.ViewHold
         }
         holder.tv_comment.setText(dataBean.getComment()+"");
         holder.tv_time.setText(ToolUtils.getDate(dataBean.getTime(),"yyyy-MM-dd HH:mm:ss"));
-
+        if(dataBean.getPicture()!=null){
+            holder.iv_picture.setVisibility(View.VISIBLE);
+            Glide.with(mContext).load(HttpUtils.DOWNLOAD_URL+dataBean.getPicture()).into(holder.iv_picture);
+        }else{
+            holder.iv_picture.setVisibility(View.GONE);
+        }
     }
 
 

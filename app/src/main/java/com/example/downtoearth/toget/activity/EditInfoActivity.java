@@ -46,7 +46,7 @@ import okhttp3.Response;
 
 public class EditInfoActivity extends BaseActivity implements View.OnClickListener {
 
-    public static final int EDIT_INFO=1000;
+    public static final int EDIT_INFO = 1000;
 
     private ViewGroup layout_nickname;
     private ViewGroup layout_gender;
@@ -62,10 +62,14 @@ public class EditInfoActivity extends BaseActivity implements View.OnClickListen
     private ImageView iv_head;
 
     private String headPicPath;
+    private PromptDialog promptDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_info);
+        promptDialog=new PromptDialog(this);
+        promptDialog.showLoading("加载中");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -87,26 +91,26 @@ public class EditInfoActivity extends BaseActivity implements View.OnClickListen
         btn_commit = findViewById(R.id.btn_commit);
         btn_commit.setOnClickListener(this);
 
-        iv_head=findViewById(R.id.iv_head);
+        iv_head = findViewById(R.id.iv_head);
         findViewById(R.id.layout_head).setOnClickListener(this);
 
         getUserInfo();
     }
 
-    public void getUserInfo(){
+    public void getUserInfo() {
         OkGo.post(HttpUtils.GET_USER_INFO)
                 .tag(this)
                 .isMultipart(true)
-                .params("token",ToolUtils.getString(this,"token"))
-                .headers("Content-Type","application/json")
+                .params("token", ToolUtils.getString(this, "token"))
+                .headers("Content-Type", "application/json")
                 .execute(new StringCallback() {
 
                     @Override
                     public void onSuccess(String s, Call call, Response response) {
-                        Log.e(TAG,s);
+                        Log.e(TAG, s);
                         try {
-                            JSONObject jsonObject=new JSONObject(s);
-                            if(jsonObject.getInt("code")==200){
+                            JSONObject jsonObject = new JSONObject(s);
+                            if (jsonObject.getInt("code") == 200) {
                                 parseData(jsonObject.getString("data"));
                             }
                         } catch (JSONException e) {
@@ -116,21 +120,24 @@ public class EditInfoActivity extends BaseActivity implements View.OnClickListen
                     }
                 });
     }
-    public void parseData(String dataStr){
-        UserInfo.DataBean.UserInfoBean uib=(new Gson()).fromJson(dataStr,UserInfo.DataBean.UserInfoBean.class);
-        if(uib.getHeadPic()!=null){
-            Glide.with(this).load(HttpUtils.DOWNLOAD_URL+uib.getHeadPic()).into(iv_head);
+
+    public void parseData(String dataStr) {
+        UserInfo.DataBean.UserInfoBean uib = (new Gson()).fromJson(dataStr, UserInfo.DataBean.UserInfoBean.class);
+        if (uib.getHeadPic() != null) {
+            Glide.with(this).load(HttpUtils.DOWNLOAD_URL + uib.getHeadPic()).into(iv_head);
         }
         tv_nickname.setText(uib.getNickname());
-        if(uib.isGender()){
+        if (uib.isGender()) {
             tv_gender.setText("男");
-        }else{
+        } else {
             tv_gender.setText("女");
 
         }
         tv_heart_word.setText(uib.getHeartWord());
         tv_birthday.setText(uib.getBirthday());
+        promptDialog.showSuccess("加载成功");
     }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -145,7 +152,7 @@ public class EditInfoActivity extends BaseActivity implements View.OnClickListen
                         .showCropFrame(false)//是否显示裁剪边框
                         .showCropGrid(false)//是否显示裁剪网格
                         .freeStyleCropEnabled(false)
-                        .withAspectRatio(1,1)
+                        .withAspectRatio(1, 1)
 //                .scaleEnabled(true)//是否可缩放
                         .rotateEnabled(false)//是否可旋转图片
                         .minimumCompressSize(100)
@@ -155,7 +162,7 @@ public class EditInfoActivity extends BaseActivity implements View.OnClickListen
             case R.id.layout_nickname:
 
                 MadeItemActivity.tv_static = tv_nickname;
-                MadeItemActivity.startAction(this,"昵称",tv_nickname.getText().toString());
+                MadeItemActivity.startAction(this, "昵称", tv_nickname.getText().toString());
                 break;
             case R.id.layout_gender:
 
@@ -165,10 +172,10 @@ public class EditInfoActivity extends BaseActivity implements View.OnClickListen
                 picker.setCanceledOnTouchOutside(true);
                 picker.setDividerRatio(WheelView.DividerConfig.FILL);
                 picker.setShadowColor(Color.GRAY, 40);
-                if(tv_gender.getText().toString().equals("男")){
+                if (tv_gender.getText().toString().equals("男")) {
                     picker.setSelectedIndex(0);
 
-                }else{
+                } else {
                     picker.setSelectedIndex(1);
 
                 }
@@ -191,9 +198,9 @@ public class EditInfoActivity extends BaseActivity implements View.OnClickListen
                 picker1.setTopPadding(ConvertUtils.toPx(this, 10));
                 picker1.setRangeEnd(2018, 12, 30);
                 picker1.setRangeStart(1949, 8, 00);
-                String[] birthday=tv_birthday.getText().toString().trim().split("-");
+                String[] birthday = tv_birthday.getText().toString().trim().split("-");
 
-                picker1.setSelectedItem(Integer.parseInt(birthday[0]), Integer.parseInt(birthday[1]),  Integer.parseInt(birthday[2]));
+                picker1.setSelectedItem(Integer.parseInt(birthday[0]), Integer.parseInt(birthday[1]), Integer.parseInt(birthday[2]));
                 picker1.setResetWhileWheel(false);
                 picker1.setOnDatePickListener(new DatePicker.OnYearMonthDayPickListener() {
                     @Override
@@ -238,22 +245,22 @@ public class EditInfoActivity extends BaseActivity implements View.OnClickListen
     }
 
 
-    public void postData(){
-        HttpParams httpParams=new HttpParams();
+    public void postData() {
+        HttpParams httpParams = new HttpParams();
 
-        if(tv_nickname.getText()==null||tv_nickname.getText().toString().isEmpty()){
+        if (tv_nickname.getText() == null || tv_nickname.getText().toString().isEmpty()) {
             showToast("请输入昵称");
             return;
-        }else{
-            if(tv_nickname.getText().length()>=12){
+        } else {
+            if (tv_nickname.getText().length() >= 12) {
                 showToast("昵称不能超过12个字符");
-            }else {
-                httpParams.put("nickname",tv_nickname.getText().toString());
+            } else {
+                httpParams.put("nickname", tv_nickname.getText().toString());
             }
         }
 
-        if(headPicPath!=null){
-            httpParams.put("headPic",new File(headPicPath));
+        if (headPicPath != null) {
+            httpParams.put("headPic", new File(headPicPath));
             JMessageClient.updateUserAvatar(new File(headPicPath), new BasicCallback() {
                 @Override
                 public void gotResult(int i, String s) {
@@ -263,36 +270,36 @@ public class EditInfoActivity extends BaseActivity implements View.OnClickListen
 
         }
 
-        if(tv_gender.getText().equals("男")){
-            httpParams.put("gender",1);
-        }else{
-            httpParams.put("gender",0);
+        if (tv_gender.getText().equals("男")) {
+            httpParams.put("gender", 1);
+        } else {
+            httpParams.put("gender", 0);
         }
 
-        if(tv_heart_word.getText()!=null){
-            httpParams.put("heartWord",tv_heart_word.getText().toString());
+        if (tv_heart_word.getText() != null) {
+            httpParams.put("heartWord", tv_heart_word.getText().toString());
         }
-        if(tv_birthday.getText()!=null){
-            httpParams.put("birthday",tv_birthday.getText().toString());
+        if (tv_birthday.getText() != null) {
+            httpParams.put("birthday", tv_birthday.getText().toString());
         }
-        final PromptDialog promptDialog=new PromptDialog(this);
+        final PromptDialog promptDialog = new PromptDialog(this);
         promptDialog.showLoading("提交中...");
         OkGo.post(HttpUtils.EDIT_INFO)
                 .tag(this)
                 .isMultipart(true)
-                .params("token",ToolUtils.getString(this,"token"))
+                .params("token", ToolUtils.getString(this, "token"))
                 .params(httpParams)
                 .execute(new StringCallback() {
                     @Override
                     public void onSuccess(String s, Call call, Response response) {
-                        Log.e(TAG,s);
+                        Log.e(TAG, s);
                         try {
-                            JSONObject jsonObject=new JSONObject(s);
-                            if(jsonObject.getInt("code")==200){
+                            JSONObject jsonObject = new JSONObject(s);
+                            if (jsonObject.getInt("code") == 200) {
                                 promptDialog.showSuccess("提交成功");
 
 
-                                cn.jpush.im.android.api.model.UserInfo userInfo=JMessageClient.getMyInfo();
+                                cn.jpush.im.android.api.model.UserInfo userInfo = JMessageClient.getMyInfo();
                                 userInfo.setNickname(tv_nickname.getText().toString());
                                 JMessageClient.updateMyInfo(cn.jpush.im.android.api.model.UserInfo.Field.nickname, userInfo, new BasicCallback() {
                                     @Override
@@ -303,10 +310,7 @@ public class EditInfoActivity extends BaseActivity implements View.OnClickListen
                                 setResult(RESULT_OK);
                                 finish();
 
-//                                Intent intent=new Intent(EditInfoActivity.this,MainActivity.class);
-//                                intent.putExtra("user_info",jsonObject.getString("data"));
-//                                startActivity(intent);
-                            }else{
+                            } else {
                                 promptDialog.showError(jsonObject.getString("message"));
                             }
                         } catch (JSONException e) {
@@ -316,13 +320,14 @@ public class EditInfoActivity extends BaseActivity implements View.OnClickListen
                     }
                 });
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         switch (requestCode) {
 
             case PictureConfig.CHOOSE_REQUEST:
-                if(resultCode==RESULT_OK){
+                if (resultCode == RESULT_OK) {
                     List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
                     if (selectList.size() != 0) {
                         headPicPath = selectList.get(0).getCompressPath();

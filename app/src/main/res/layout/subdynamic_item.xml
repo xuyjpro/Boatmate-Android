@@ -12,6 +12,7 @@
         android:layout_height="32dp"
         android:layout_alignParentLeft="true"
         android:layout_margin="12dp"
+        android:foreground="?android:selectableItemBackground"
         android:src="@mipmap/person" />
 
     <RelativeLayout

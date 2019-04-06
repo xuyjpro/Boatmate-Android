@@ -65,6 +65,15 @@ public class DynamicListBean {
         private String nickname;
         private long time;
         private int uid;
+        private String picture;
+
+        public String getPicture() {
+            return picture;
+        }
+
+        public void setPicture(String picture) {
+            this.picture = picture;
+        }
 
         public int getAwesome() {
             return awesome;

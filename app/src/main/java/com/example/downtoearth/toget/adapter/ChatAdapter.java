@@ -91,6 +91,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         } else {
             holder.tv_unread.setVisibility(View.GONE);
         }
+
 //        holder.iv_head.setImageResource(R.mipmap.default_help_pic);
         JMessageClient.getUserInfo(((UserInfo) conversation.getTargetInfo()).getUserName(), new GetUserInfoCallback() {
             @Override

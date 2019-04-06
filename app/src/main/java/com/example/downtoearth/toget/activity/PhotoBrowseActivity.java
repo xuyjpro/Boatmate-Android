@@ -56,6 +56,21 @@ public class PhotoBrowseActivity extends AppCompatActivity {
         }
         ActivityCompat.startActivity(context, intent, compat.toBundle());
     }
+    public static void startWithOnePicture(Activity context, String url, View view) {
+        ArrayList<String> urls=new ArrayList<>();
+        urls.add(url);
+        Intent intent = new Intent(context, PhotoBrowseActivity.class);
+        intent.putStringArrayListExtra("urls", urls);
+        intent.putExtra("index", 0);
+        ActivityOptionsCompat compat = null;
+        if (view == null) {
+            compat = ActivityOptionsCompat.makeSceneTransitionAnimation(context);
+        } else {
+            compat = ActivityOptionsCompat.makeSceneTransitionAnimation(context, view,
+                    "tansition_view");
+        }
+        ActivityCompat.startActivity(context, intent, compat.toBundle());
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

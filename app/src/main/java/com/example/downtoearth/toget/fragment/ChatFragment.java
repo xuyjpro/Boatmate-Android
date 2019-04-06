@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.example.downtoearth.toget.R;
 import com.example.downtoearth.toget.activity.ChatActivity;
 import com.example.downtoearth.toget.activity.DynamicDetailActivity;
+import com.example.downtoearth.toget.activity.MainPagerActivity;
 import com.example.downtoearth.toget.activity.PublishCommentActivity;
 import com.example.downtoearth.toget.adapter.ChatAdapter;
 import com.example.downtoearth.toget.adapter.DynamicAdapter;
@@ -69,7 +70,8 @@ public class ChatFragment extends BaseFragment {
         recyclerView.setAdapter(mAdapter = new ChatAdapter(mDynamicList));
         mAdapter.setOnItemClickListener(new ChatAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(int position) { Conversation conversation= (Conversation) mDynamicList.get(position);
+            public void onItemClick(int position) {
+                Conversation conversation= (Conversation) mDynamicList.get(position);
                 Intent intent=new Intent(getContext(),ChatActivity.class);
                 intent.putExtra("username",((cn.jpush.im.android.api.model.UserInfo)conversation.getTargetInfo()).getUserName());
 
@@ -85,7 +87,10 @@ public class ChatFragment extends BaseFragment {
 
             @Override
             public void onHeadClick(int position) {
+                Conversation conversation= (Conversation) mDynamicList.get(position);
 
+                cn.jpush.im.android.api.model.UserInfo userInfo= (cn.jpush.im.android.api.model.UserInfo) conversation.getTargetInfo();
+                MainPagerActivity.start(getActivity(),userInfo.getUserName(),userInfo.getNickname());
             }
         });
         smartRefreshLayout.setOnRefreshLoadmoreListener(new OnRefreshLoadmoreListener() {

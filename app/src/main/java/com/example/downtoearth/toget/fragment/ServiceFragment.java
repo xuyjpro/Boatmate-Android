@@ -105,7 +105,6 @@ public class ServiceFragment extends BaseFragment implements View.OnClickListene
         //
         helpList=new ArrayList();
         rv_helps.setLayoutManager(new LinearLayoutManager(getContext()));
-     //   rv_helps.setAdapter(helpAdapter=new SchoolHelpAdapter(helpList));
         rv_helps.setNestedScrollingEnabled(false);
 
         initListener();
@@ -153,7 +152,6 @@ public class ServiceFragment extends BaseFragment implements View.OnClickListene
                         startActivityForResult(intent,1000);
                     }
                 });
-                //helpAdapter.notifyDataSetChanged();
             }
         }
     }
@@ -209,14 +207,7 @@ public class ServiceFragment extends BaseFragment implements View.OnClickListene
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==1000){
-//            if(data!=null){
-//                int position=data.getIntExtra("position",0);
-//                if(position!=0){
-//
-//                    helpList.remove(position);
-//                    helpAdapter.notifyItemRemoved(position);
-//                }
-//            }
+
             getHelpList();
         }else{
             getHelpList();

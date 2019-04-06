@@ -34,7 +34,7 @@ public class SplashActivity extends Activity {
 
         layout_bg=findViewById(R.id.layout_bg);
         AlphaAnimation alphaAnimation=new AlphaAnimation(0.1f,1.0f);
-        alphaAnimation.setDuration(1000);
+        alphaAnimation.setDuration(50);
         layout_bg.setAnimation(alphaAnimation);
         alphaAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -74,5 +74,6 @@ public class SplashActivity extends Activity {
 
             }
         });
+
     }
 }

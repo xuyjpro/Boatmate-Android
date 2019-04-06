@@ -151,6 +151,12 @@ public class CommentDetailActivity extends BaseActivity implements View.OnClickL
             public void onDetailClick(int position) {
 
             }
+
+            @Override
+            public void onHead(int position) {
+                Comment.DataBean dataBean= (Comment.DataBean) mDataList.get(position);
+                MainPagerActivity.start(CommentDetailActivity.this,dataBean.getUid(),dataBean.getNickname());
+            }
         });
         refreshLayout.setOnRefreshLoadmoreListener(new OnRefreshLoadmoreListener() {
             @Override
@@ -177,6 +183,7 @@ public class CommentDetailActivity extends BaseActivity implements View.OnClickL
         findViewById(R.id.layout_comment).setOnClickListener(this);
         findViewById(R.id.layout_delete).setOnClickListener(this);
         cb_like.setOnClickListener(this);
+        iv_head.setOnClickListener(this);
     }
 
     public void getDetail() {
@@ -335,6 +342,9 @@ public class CommentDetailActivity extends BaseActivity implements View.OnClickL
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.iv_head:
+                MainPagerActivity.start(this,uid,tv_name.getText().toString());
+                break;
             case R.id.layout_back:
                 Intent intent = new Intent();
                 intent.putExtra("position", getIntent().getIntExtra("position", 0));
@@ -364,22 +374,7 @@ public class CommentDetailActivity extends BaseActivity implements View.OnClickL
                         promptDialog.dismiss();
                     }
                 }), confirm);
-//                new CircleDialog.Builder()
-//                        .setCanceledOnTouchOutside(false)
-//                        .setCancelable(false)
-//
-//                        .setTitle("删除")
-//                        .setText("是否确定删除该动态？")
-//
-//                        .setNegative("取消", null)
-//                        .setPositive("确定", new View.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(View view) {
-//                                        postDelete();
-//                                    }
-//                                }
-//                        )
-//                        .show(getSupportFragmentManager());
+
                 break;
             case R.id.layout_comment:
                 PublishCommentActivity.startActivityForSubComment(this,getIntent().getIntExtra("id",0),uid,tv_name.getText().toString(),1000);

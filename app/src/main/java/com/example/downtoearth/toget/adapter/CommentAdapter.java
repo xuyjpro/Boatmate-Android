@@ -50,6 +50,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         void onItemClick(int position);
         void onCommentClick(int position);
         void onDetailClick(int position);
+        void onHead(int position);
     }
      class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView iv_head;
@@ -106,6 +107,15 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                 int position=holder.getAdapterPosition();
                 if(mListener!=null){
                     mListener.onDetailClick(position);
+                }
+            }
+        });
+        holder.iv_head.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int position=holder.getAdapterPosition();
+                if(mListener!=null){
+                    mListener.onHead(position);
                 }
             }
         });

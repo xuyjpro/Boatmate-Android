@@ -17,6 +17,7 @@ import com.example.downtoearth.toget.R;
 import com.example.downtoearth.toget.activity.ChatActivity;
 import com.example.downtoearth.toget.activity.DynamicDetailActivity;
 import com.example.downtoearth.toget.activity.MainPagerActivity;
+import com.example.downtoearth.toget.activity.PhotoBrowseActivity;
 import com.example.downtoearth.toget.activity.PublishCommentActivity;
 import com.example.downtoearth.toget.adapter.DynamicAdapter;
 import com.example.downtoearth.toget.bean.DynamicListBean;
@@ -120,6 +121,12 @@ public class DynamicFragment extends BaseFragment {
                 intent.putExtra("nickname",dataBean.getNickname());
                 startActivity(intent);
             }
+
+            @Override
+            public void onPicture(int position) {
+                DynamicListBean.DataBean dataBean= (DynamicListBean.DataBean) mDynamicList.get(position);
+                PhotoBrowseActivity.startWithOnePicture(getActivity(),dataBean.getPicture(),getView());
+            }
         });
 
         smartRefreshLayout.autoRefresh();
@@ -149,7 +156,7 @@ public class DynamicFragment extends BaseFragment {
                     }
                     @Override
                     public void onSuccess(String s, Call call, Response response) {
-                        Log.e("result", s);
+                        Log.e(TAG, s);
                         try {
                             JSONObject jsonObject = new JSONObject(s);
                             if (jsonObject.getInt("code") == 200) {

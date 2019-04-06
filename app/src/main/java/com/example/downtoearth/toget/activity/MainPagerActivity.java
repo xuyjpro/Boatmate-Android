@@ -1,6 +1,8 @@
 package com.example.downtoearth.toget.activity;
 
 import android.app.ActionBar;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -9,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,12 +52,28 @@ public class MainPagerActivity extends BaseActivity {
     private ImageView iv_picture;
     private TextView tv_chat;
     private TextView tv_report;
+    private ViewGroup layout_bottom;
     private int uid;
-    private int mNextPage=1;
+    private int mNextPage = 1;
     private List mDataList;
     private DynamicAdapter mAdapter;
 
     private PromptDialog promptDialog;
+
+    public static void start(Activity activity, int uid, String nickname) {
+        Intent intent = new Intent(activity, MainPagerActivity.class);
+        intent.putExtra("id", uid);
+        intent.putExtra("nickname", nickname);
+        activity.startActivity(intent);
+    }
+
+    public static void start(Activity activity, String phone, String nickname) {
+        Intent intent = new Intent(activity, MainPagerActivity.class);
+        intent.putExtra("phone", phone);
+        intent.putExtra("nickname", nickname);
+        activity.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,32 +94,14 @@ public class MainPagerActivity extends BaseActivity {
         iv_picture = findViewById(R.id.iv_picture);
 
         recyclerView = findViewById(R.id.recycler_view);
+        layout_bottom = findViewById(R.id.layout_bottom);
 
-        promptDialog=new PromptDialog(this);
+        promptDialog = new PromptDialog(this);
         promptDialog.showLoading("加载中");
     }
 
     public void initData() {
-        if(getIntent().getIntExtra("id",0)!=0){
-            uid=getIntent().getIntExtra("id",0);
 
-            if(uid==ToolUtils.getInt(this,"uid")){
-                tv_chat.setVisibility(View.GONE);
-            }else{
-                tv_report.setVisibility(View.GONE);
-                tv_chat.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent=new Intent(MainPagerActivity.this,ChatActivity.class);
-                        intent.putExtra("username",tv_phone.getText().toString());
-                        intent.putExtra("nickname",tv_nickname.getText().toString());
-                        startActivity(intent);
-                    }
-                });
-            }
-        }else{
-
-        }
         Toolbar toolbar = findViewById(R.id.toolbar);
         CollapsingToolbarLayout collapsingToolbar = findViewById(R.id.collapsing_toolbar);
         setSupportActionBar(toolbar);
@@ -117,9 +118,9 @@ public class MainPagerActivity extends BaseActivity {
             }
         });
 
-        mDataList=new ArrayList();
+        mDataList = new ArrayList();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(mAdapter=new DynamicAdapter(mDataList));
+        recyclerView.setAdapter(mAdapter = new DynamicAdapter(mDataList));
         mAdapter.setOnItemClikcListener(new DynamicAdapter.OnItemClickListener() {
             @Override
             public void onLikeClick(int position) {
@@ -132,30 +133,36 @@ public class MainPagerActivity extends BaseActivity {
             public void onItemClick(int position) {
                 Intent intent = new Intent(MainPagerActivity.this, DynamicDetailActivity.class);
                 intent.putExtra("id", ((DynamicListBean.DataBean) mDataList.get(position)).getId());
-                intent.putExtra("position",position);
-                startActivityForResult(intent,1000);
+                intent.putExtra("position", position);
+                startActivityForResult(intent, 1000);
             }
 
             @Override
             public void onCommentClick(int position) {
 
-                DynamicListBean.DataBean dataBean= (DynamicListBean.DataBean) mDataList.get(position);
+                DynamicListBean.DataBean dataBean = (DynamicListBean.DataBean) mDataList.get(position);
 
-                PublishCommentActivity.startActivityForComment(MainPagerActivity.this,dataBean.getId(),dataBean.getNickname(),1000);
+                PublishCommentActivity.startActivityForComment(MainPagerActivity.this, dataBean.getId(), dataBean.getNickname(), 1000);
             }
 
             @Override
             public void onHeadClick(int position) {
-                DynamicListBean.DataBean dataBean= (DynamicListBean.DataBean) mDataList.get(position);
-                Intent intent=new Intent(MainPagerActivity.this,MainPagerActivity.class);
-                intent.putExtra("id",dataBean.getUid());
-                intent.putExtra("nickname",dataBean.getNickname());
+                DynamicListBean.DataBean dataBean = (DynamicListBean.DataBean) mDataList.get(position);
+                Intent intent = new Intent(MainPagerActivity.this, MainPagerActivity.class);
+                intent.putExtra("id", dataBean.getUid());
+                intent.putExtra("nickname", dataBean.getNickname());
                 startActivity(intent);
+            }
+
+            @Override
+            public void onPicture(int position) {
+                DynamicListBean.DataBean dataBean = (DynamicListBean.DataBean) mDataList.get(position);
+                PhotoBrowseActivity.startWithOnePicture(MainPagerActivity.this, dataBean.getPicture(), null);
             }
         });
 
         recyclerView.setNestedScrollingEnabled(false);
-        SmartRefreshLayout refreshLayout=findViewById(R.id.smart_refresh);
+        SmartRefreshLayout refreshLayout = findViewById(R.id.smart_refresh);
         refreshLayout.setOnRefreshLoadmoreListener(new OnRefreshLoadmoreListener() {
             @Override
             public void onLoadmore(RefreshLayout refreshlayout) {
@@ -171,48 +178,57 @@ public class MainPagerActivity extends BaseActivity {
         });
 
         getUserInfo();
-        getNewData(false);
     }
 
     public void getUserInfo() {
+        String phone = getIntent().getStringExtra("phone");
+        HttpParams httpParams = new HttpParams();
+
+        if (phone != null) {
+            httpParams.put("phone", phone);
+        } else {
+            uid=getIntent().getIntExtra("id",0);
+            httpParams.put("token", uid == 0 ? ToolUtils.getString(this, "token") : SecretUtils.encode(uid + ""));
+
+        }
         OkGo.post(HttpUtils.GET_USER_INFO)
                 .tag(this)
                 .isMultipart(true)
-                .params("token", uid==0?ToolUtils.getString(this,"token"):SecretUtils.encode(uid+""))
+                .params(httpParams)
                 .headers("Content-Type", "application/json")
                 .execute(new StringCallback() {
 
                     @Override
                     public void onSuccess(String s, Call call, Response response) {
-                          Log.e(TAG, s);
+                        Log.e(TAG, s);
                         try {
                             JSONObject jsonObject = new JSONObject(s);
                             if (jsonObject.getInt("code") == 200) {
                                 updateUI(jsonObject.getString("data"));
                                 promptDialog.showSuccess("加载成功");
 
-                            }else{
+                            } else {
                                 promptDialog.dismiss();
 
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
                     }
                 });
     }
+
     public void getNewData(final boolean isRefresh) {
         if (isRefresh) {
             mNextPage = 1;
         }
-        HttpParams httpParams=new HttpParams();
-        httpParams.put("token",ToolUtils.getString(this,"token"));
-        httpParams.put("currentPage",mNextPage);
-        httpParams.put("category",0);
+        HttpParams httpParams = new HttpParams();
+        httpParams.put("token", ToolUtils.getString(this, "token"));
+        httpParams.put("currentPage", mNextPage);
+        httpParams.put("category", 0);
 
-        httpParams.put("to_uid",uid);
-        httpParams.put("isAll",1);
+        httpParams.put("to_uid", uid);
+        httpParams.put("isAll", 1);
         OkGo.post(HttpUtils.DYNAMIC_LIST)
                 .tag(this)
                 .isMultipart(true)
@@ -241,26 +257,27 @@ public class MainPagerActivity extends BaseActivity {
                     }
                 });
     }
+
     public void parseData(String s, boolean isRefresh) {
         DynamicListBean dlb = new Gson().fromJson(s, DynamicListBean.class);
-        if (dlb.getData() != null&&dlb.getData().size()!=0) {
+        if (dlb.getData() != null && dlb.getData().size() != 0) {
             if (isRefresh) {
                 mDataList.clear();
             }
             mDataList.addAll(dlb.getData());
-            showToast(mDataList.size()+"");
             mAdapter.notifyDataSetChanged();
         } else {
             mNextPage--;
             showToast("没有更多数据了");
         }
     }
+
     public void postLike(final int position) {
         final DynamicListBean.DataBean dataBean = (DynamicListBean.DataBean) mDataList.get(position);
         OkGo.post(HttpUtils.LIKE_CLICK)
                 .tag(this)
                 .isMultipart(true)
-                .params("token", ToolUtils.getString(this,"token"))
+                .params("token", ToolUtils.getString(this, "token"))
                 .params("id", dataBean.getId())
                 .params("isLike", dataBean.isLike() ? 1 : 0)
                 .execute(new StringCallback() {
@@ -290,31 +307,57 @@ public class MainPagerActivity extends BaseActivity {
                     }
                 });
     }
+
     public void updateUI(String dataStr) {
         UserInfo.DataBean.UserInfoBean uib = (new Gson()).fromJson(dataStr, UserInfo.DataBean.UserInfoBean.class);
         if (uib.getHeadPic() != null) {
             Glide.with(this).load(HttpUtils.DOWNLOAD_URL + uib.getHeadPic()).into(iv_picture);
-        }else{
+        } else {
             showToast("pic null");
         }
         tv_nickname.setText(uib.getNickname());
         tv_birthday.setText(uib.getBirthday());
-        tv_gender.setText(uib.isGender()?"男":"女");
+        tv_gender.setText(uib.isGender() ? "男" : "女");
         tv_heart_word.setText(uib.getHeartWord());
         tv_phone.setText(uib.getPhone());
 
+
+        uid = uib.getId();
+        if (uid == ToolUtils.getInt(this, "uid")) {
+           layout_bottom.setVisibility(View.GONE);
+
+        } else {
+            tv_chat.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(MainPagerActivity.this, ChatActivity.class);
+                    intent.putExtra("username", tv_phone.getText().toString());
+                    intent.putExtra("nickname", tv_nickname.getText().toString());
+                    startActivity(intent);
+                }
+            });
+            tv_report.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showToast("暂未开发");
+                }
+            });
+        }
+        getNewData(false);
+
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==1000) {  //动态详情
-            if(data!=null){
-                int position=data.getIntExtra("position",0);
+        if (requestCode == 1000) {  //动态详情
+            if (data != null) {
+                int position = data.getIntExtra("position", 0);
                 if (resultCode == 2000) {   //修改
-                    DynamicListBean.DataBean dataBean= (DynamicListBean.DataBean) mDataList.get(position);
-                    dataBean.setAwesome(data.getIntExtra("awesome",0));
-                    dataBean.setComment(data.getIntExtra("comment",0));
-                    dataBean.setLike(data.getBooleanExtra("isLike",true));
+                    DynamicListBean.DataBean dataBean = (DynamicListBean.DataBean) mDataList.get(position);
+                    dataBean.setAwesome(data.getIntExtra("awesome", 0));
+                    dataBean.setComment(data.getIntExtra("comment", 0));
+                    dataBean.setLike(data.getBooleanExtra("isLike", true));
                     mAdapter.notifyItemChanged(position);
                 } else if (resultCode == 2001) { //删除
                     mDataList.remove(position);
