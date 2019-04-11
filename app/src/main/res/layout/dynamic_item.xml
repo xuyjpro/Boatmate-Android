@@ -7,7 +7,6 @@
         android:id="@+id/layout_main"
         android:layout_width="match_parent"
         android:background="@drawable/rv_focus_seletor"
-
         android:layout_height="match_parent">
 
         <de.hdodenhof.circleimageview.CircleImageView

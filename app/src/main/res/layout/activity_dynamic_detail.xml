@@ -121,9 +121,7 @@
                     android:layout_height="160dp"
                     android:visibility="gone"
                     android:layout_marginHorizontal="12dp"
-                    android:layout_marginTop="5dp"
-
-                    android:src="@mipmap/default_help_pic"/>
+                    android:layout_marginTop="5dp" />
                 <View
                     android:layout_width="match_parent"
                     android:layout_marginHorizontal="12dp"
