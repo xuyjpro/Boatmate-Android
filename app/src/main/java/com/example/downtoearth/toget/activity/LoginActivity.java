@@ -140,6 +140,18 @@ public class LoginActivity extends BaseActivity {
                     }
                 });
     }
+    /**
+     *@auther xuyujie
+     *@param tel
+     *@return boolean
+     */
+    private static boolean checkTel(String tel) {
+
+        //编译正则表达式
+        String rep="^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]"+
+                "|18[0|1|2|3|5|6|7|8|9])\\d{8}$" ;
+        return tel.matches(rep);
+    }
 
     public void parseData(String s){
 

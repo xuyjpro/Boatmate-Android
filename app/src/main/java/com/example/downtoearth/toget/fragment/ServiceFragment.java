@@ -82,7 +82,7 @@ public class ServiceFragment extends BaseFragment implements View.OnClickListene
     public void initData() {
         images=new ArrayList<>();
         images.add(HttpUtils.DOWNLOAD_URL+"banner_image1.jpg");
-        images.add(HttpUtils.DOWNLOAD_URL+"banner_image2.jpeg");
+        images.add(HttpUtils.DOWNLOAD_URL+"banner_image2.jpg");
         images.add(HttpUtils.DOWNLOAD_URL+"banner_image3.jpg");
 
         titles=new ArrayList<>();

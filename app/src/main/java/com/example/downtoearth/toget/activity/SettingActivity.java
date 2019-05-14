@@ -3,6 +3,8 @@ package com.example.downtoearth.toget.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -10,6 +12,8 @@ import android.widget.TextView;
 
 import com.example.downtoearth.toget.R;
 import com.example.downtoearth.toget.bean.AppVersion;
+import com.example.downtoearth.toget.bean.Area;
+import com.example.downtoearth.toget.bean.Province;
 import com.example.downtoearth.toget.utils.ActivityCollector;
 import com.example.downtoearth.toget.utils.DataCleanManager;
 import com.example.downtoearth.toget.utils.DownloadIntentService;
@@ -22,6 +26,11 @@ import com.lzy.okgo.callback.StringCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import cn.jpush.im.android.api.JMessageClient;
 import me.leefeng.promptlibrary.PromptButton;
@@ -45,6 +54,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         initView();
         initData();
         initEvent();
+        getArea();
     }
     public void initView(){
         layout_password=findViewById(R.id.layout_password);
@@ -218,5 +228,79 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 break;
 
         }
+    }
+    public void getArea(){
+        String url="https://apis.map.qq.com/ws/district/v1/list?key=OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77";
+        String cookie="mpuv=0da9a44d-9cf9-4255-fa5a-fb1a1ddd4221; pgv_pvi=1210641408; ptui_loginuin=892575153@qq.com; RK=saIt/VX4cD; ptcz=a600cf37e45399ed8da80f6294ad3fca8a65fa6f421174f82cbd9b556569dfa2; pgv_si=s1921571840";
+        String user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36";
+        String referer="https://lbs.qq.com/webservice_v1/guide-region.html";
+
+        OkGo.get(url)
+                .tag(this)
+                .headers("Cookie",cookie)
+                .headers("User-Agent",user_agent)
+                .headers("Referer",referer)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onSuccess(String s, Call call, Response response) {
+                        Log.d("SplashActivity",s);
+                        parseArea(s);
+                    }
+                });
+
+    }
+
+    public void parseArea(String s){
+        Area area=new Gson().fromJson(s,Area.class);
+        List<Area.ResultBean> provinces=area.getResult().get(0);
+        List<Area.ResultBean> citys=area.getResult().get(1);
+        List<Area.ResultBean> countys=area.getResult().get(2);
+
+        List<Province> list=new ArrayList<>();
+        for(Area.ResultBean p:provinces){
+            Province province=new Province();
+            province.setName(p.getFullname().trim());
+            List<Province.City> cityList=new ArrayList<>();
+            for(Area.ResultBean c:citys.subList(p.getCidx().get(0),p.getCidx().get(1))){
+                Province.City city=new Province.City();
+                city.setName(c.getFullname().trim());
+                if(c.getCidx()!=null){
+                    List<String> countyList=new ArrayList<>();
+
+                    for(Area.ResultBean ct:countys.subList(c.getCidx().get(0),c.getCidx().get(1))){
+                        countyList.add(ct.getFullname().trim());
+                    }
+                    city.setAreaList(countyList);
+
+                }
+                cityList.add(city);
+
+            }
+            province.setAreaList(cityList);
+            list.add(province);
+        }
+        saveArea(new Gson().toJson(list));
+
+    }
+    public void saveArea(final String s){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                String path=Environment.getExternalStorageDirectory().getAbsolutePath()+File.separator+"area.txt";
+                File file=new File(path);
+                try {
+                    if(!file.exists()){
+                        file.createNewFile();
+                    }
+                    FileWriter fileWritter = new FileWriter(file,true);
+                    fileWritter.write(s);
+                    fileWritter.close();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 }

@@ -157,7 +157,7 @@ public class MainActivity extends BaseActivity implements PermissionInterface {
         chatFragment.setGetUnReadCount(new ChatFragment.OnGetUnReadCount() {
             @Override
             public void getUnReadCount(int unReadCount) {
-                showBadgeView(2,unReadCount);
+                showBadgeView(3,unReadCount);
             }
         });
 
@@ -270,11 +270,9 @@ public class MainActivity extends BaseActivity implements PermissionInterface {
             // 显示badegeview
             if(showNumber==0){
                 qBadgeView.hide(true);
-                //new QBadgeView(this).bindTarget(view).setGravityOffset(spaceWidth, 3, false).setBadgeBackgroundColor(Color.).setBadgeNumber(6);
 
             }else{
                 qBadgeView.setBadgeNumber(showNumber);
-                //new QBadgeView(this).bindTarget(view).setGravityOffset(spaceWidth, 3, false).setBadgeNumber(showNumber);
 
             }
         }

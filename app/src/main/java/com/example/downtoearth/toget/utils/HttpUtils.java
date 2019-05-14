@@ -7,8 +7,8 @@ package com.example.downtoearth.toget.utils;
 public class HttpUtils {
 
 
- //   public static final String IP="23.95.216.81";
-    private  static final String IP = "118.31.76.29";
+//    public static final String IP="192.168.43.38:8080";
+    private  static final String IP = "47.111.170.43";
     private static final String PROJECT_URL="http://" + IP + "/boatmate/";
 
     /*
